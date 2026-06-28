@@ -234,13 +234,14 @@ export const onboarding = {
 };
 
 export const features = [
-  { title: "Design Memory", desc: "Preserve rationale.", icon: "🧠", color: "#007AFF" },
-  { title: "AI Search", desc: "Ask projects anything.", icon: "🔎", color: "#AF52DE" },
+  { title: "Design Memory", desc: "Preserve the rationale behind every design decision.", icon: "🧠", color: "#007AFF" },
+  { title: "AI with context", desc: "Ask your projects anything and get sourced answers.", icon: "🔎", color: "#AF52DE" },
   { title: "Figma Plugin", desc: "Capture knowledge without leaving Figma.", icon: "🎨", color: "#FF9500" },
-  { title: "Onboarding Assistant", desc: "Understand projects instantly.", icon: "🚀", color: "#34C759" },
-  { title: "Evidence Linking", desc: "Every answer is traceable.", icon: "🔗", color: "#AF52DE" },
+  { title: "Onboard-Day Assistant", desc: "Understand any project instantly on day one.", icon: "🚀", color: "#34C759" },
+  { title: "Evidence Linking", desc: "Every answer traces back to its source.", icon: "🔗", color: "#AF52DE" },
 ];
 
+export const teamTags = ["Product Management", "Marketing", "Engineering", "Design"];
 export const customerLogos = ["Jedi Finance", "Jedi Medical", "Jedi Microscopy", "Jedi Photography"];
 
 export const guidelines = {

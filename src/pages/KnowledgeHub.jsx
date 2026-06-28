@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { projects, departmentColors, statusBadge } from "../data";
-import { IconSearch } from "../components/Icons";
+import { projects, statusBadge } from "../data";
+import { IconSearch, IconStar, IconArrow } from "../components/Icons";
 
-const filters = ["All", "Finance", "Microscopy", "Photography", "Medical", "Research", "Active", "Completed", "Favorites"];
+const filters = ["All", "Finance", "Microscopy", "Photography", "Medical", "Research", "Active", "Completed", "In Preparation", "Favorites"];
+
+// avatar stacks per project (initials + colors)
+const teams = {
+  "fee-management": [["SL", "#007AFF"], ["AK", "#AF52DE"], ["KM", "#FF9500"]],
+  "microscope-config": [["MV", "#FF9500"], ["DC", "#34C759"]],
+  "photo-asset": [["LO", "#AF52DE"], ["PS", "#e056c8"], ["AK", "#007AFF"]],
+  "patient-portal": [["AO", "#34C759"], ["GS", "#007AFF"]],
+};
 
 export default function KnowledgeHub() {
   const [active, setActive] = useState("All");
@@ -14,6 +22,7 @@ export default function KnowledgeHub() {
     if (active === "All") return true;
     if (active === "Favorites") return p.favorite;
     if (active === "Active") return p.status === "Active" || p.status === "In Development";
+    if (active === "In Preparation") return p.status === "In Development";
     if (active === "Completed") return p.status === "Released";
     if (active === "Research") return p.status === "Research";
     return p.department === active;
@@ -37,48 +46,38 @@ export default function KnowledgeHub() {
         ))}
       </div>
 
-      <div className="project-grid">
+      <div className="khub-grid">
         {filtered.map((p) => {
-          const color = departmentColors[p.department];
+          const label = p.status === "In Development" ? "In Preparation" : p.status;
           return (
-            <Link key={p.id} to={`/projects/${p.id}`} className="card card-hover">
-              <div className="proj-card-top">
-                <div>
-                  <div className="proj-name">
-                    {p.favorite && <span style={{ color: "var(--yellow)" }}>⭐</span>}
-                    {p.name}
-                  </div>
-                  <div className="badge" style={{ marginTop: 8, background: `${color}22`, color }}>
-                    <span className="dot" style={{ background: color }} />{p.department}
-                  </div>
+            <Link key={p.id} to={`/projects/${p.id}`} className="card card-hover khub-card">
+              <div className="khub-top">
+                <div className="khub-title">
+                  <span className={"star" + (p.favorite ? " on" : "")} style={{ width: 18, height: 18 }}><IconStar /></span>
+                  {p.name}
                 </div>
-                <span className={"badge " + statusBadge[p.status]}>{p.status}</span>
+                <span className={"badge " + statusBadge[p.status]}>{label}</span>
               </div>
 
-              <div className="proj-meta">
-                <div>
-                  <div className="m-l">Accessibility</div>
-                  <div className="m-v" style={{ color: "var(--green)" }}>{p.accessibility}</div>
-                </div>
-                <div>
-                  <div className="m-l">Coverage</div>
-                  <div className="m-v" style={{ color: "var(--accent)" }}>{p.coverage}%</div>
-                </div>
-                <div>
-                  <div className="m-l">Updated</div>
-                  <div className="m-v" style={{ fontSize: 13 }}>{p.updated}</div>
-                </div>
+              <div className="khub-stats">
+                <div><div className="kl">Decisions</div><div className="kv">{p.decisions}</div></div>
+                <div><div className="kl">Research</div><div className="kv">{p.research}</div></div>
+                <div><div className="kl">Accessibility</div><div className="kv">{p.accessibility} <span className="kl" style={{ textTransform: "none" }}>score</span></div></div>
               </div>
 
-              {p.owner && (
-                <div className="faint" style={{ fontSize: 12.5, marginBottom: 12 }}>
-                  Owner: <span className="muted">{p.owner}</span>
-                </div>
-              )}
+              <p className="khub-desc">{p.summary}</p>
 
-              <div className="proj-stats">
-                <span>🔬 <strong style={{ color: "var(--text)" }}>{p.research}</strong> Research</span>
-                <span>🧭 <strong style={{ color: "var(--text)" }}>{p.decisions}</strong> Decisions</span>
+              <div className="avatar-stack">
+                {(teams[p.id] || []).map(([ini, c], i) => (
+                  <span key={i} className="stack-av" style={{ background: c, zIndex: 10 - i }}>{ini}</span>
+                ))}
+              </div>
+
+              <div className="khub-foot">
+                <span className="faint" style={{ fontSize: 12 }}>
+                  Created by <b style={{ color: "var(--text-dim)" }}>Design system team</b> · {p.updated}
+                </span>
+                <span className="khub-link">Project {p.department} <span style={{ width: 14, height: 14 }}><IconArrow /></span></span>
               </div>
             </Link>
           );

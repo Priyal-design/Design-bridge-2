@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { kpis, knowledgeGaps, activity, coverageChart } from "../data";
-import { IconChat, IconAdd, IconHub, IconGraph } from "../components/Icons";
+import { kpis, knowledgeGaps, activity, coverageChart, projects, statusBadge } from "../data";
+import { IconChat, IconHub, IconArrow } from "../components/Icons";
 
 function Gauge({ value }) {
   const r = 84, c = 2 * Math.PI * r;
@@ -30,10 +30,8 @@ function Gauge({ value }) {
 }
 
 const quickActions = [
-  { label: "Ask Design Bridge", to: "/chat", icon: IconChat, color: "#007AFF" },
-  { label: "Add Knowledge", to: "/add", icon: IconAdd, color: "#AF52DE" },
-  { label: "Explore Projects", to: "/hub", icon: IconHub, color: "#FF9500" },
-  { label: "Open Knowledge Graph", to: "/graph", icon: IconGraph, color: "#AF52DE" },
+  { label: "Explore Projects", to: "/hub", icon: IconHub, color: "#007AFF" },
+  { label: "Ask Knowledge", to: "/chat", icon: IconChat, color: "#AF52DE" },
 ];
 
 export default function Dashboard() {
@@ -116,19 +114,48 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Quick actions */}
-      <div className="card">
-        <div className="section-title">Quick Actions</div>
-        <div className="quick-grid">
-          {quickActions.map((q) => (
-            <Link key={q.label} to={q.to} className="quick-btn">
-              <span className="quick-ic" style={{ background: `${q.color}22`, color: q.color }}>
-                <span style={{ width: 18, height: 18 }}><q.icon /></span>
-              </span>
-              {q.label}
-            </Link>
-          ))}
+      {/* Recent projects */}
+      <div className="card mb24">
+        <div className="row between mb16" style={{ alignItems: "center" }}>
+          <div className="section-title" style={{ margin: 0 }}>Recent Projects</div>
+          <Link to="/hub" className="khub-link">View all <span style={{ width: 14, height: 14 }}><IconArrow /></span></Link>
         </div>
+        <div className="dash-proj-grid">
+          {projects.slice(0, 3).map((p) => {
+            const label = p.status === "In Development" ? "In Preparation" : p.status;
+            return (
+              <Link key={p.id} to={`/projects/${p.id}`} className="dash-proj card-hover">
+                <div className="row between" style={{ alignItems: "flex-start", gap: 8 }}>
+                  <div style={{ fontWeight: 700, fontSize: 14.5, letterSpacing: "-0.3px" }}>{p.name}</div>
+                  <span className={"badge " + statusBadge[p.status]} style={{ flex: "none" }}>{label}</span>
+                </div>
+                <div className="dash-proj-stats">
+                  <div><div className="kl">Decisions</div><div className="kv">{p.decisions}</div></div>
+                  <div><div className="kl">Research</div><div className="kv">{p.research}</div></div>
+                  <div><div className="kl">A11y</div><div className="kv">{p.accessibility}</div></div>
+                </div>
+                <span className="khub-link" style={{ marginTop: 14 }}>Project {p.department} <span style={{ width: 14, height: 14 }}><IconArrow /></span></span>
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Quick actions */}
+      <div className="quick-grid">
+        {quickActions.map((q) => (
+          <Link key={q.label} to={q.to} className="quick-btn" style={{ padding: 22 }}>
+            <span className="quick-ic" style={{ background: `${q.color}22`, color: q.color }}>
+              <span style={{ width: 18, height: 18 }}><q.icon /></span>
+            </span>
+            <div>
+              <div style={{ fontSize: 15 }}>{q.label}</div>
+              <div className="faint" style={{ fontSize: 12.5, fontWeight: 500 }}>
+                {q.label === "Explore Projects" ? "Browse every captured project" : "Ask anything about your design knowledge"}
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

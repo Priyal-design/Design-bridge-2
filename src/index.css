@@ -70,6 +70,11 @@
   --shadow-blue:   0 14px 32px rgba(0, 122, 255, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.32);
   --shadow-blue-hover: 0 20px 44px rgba(0, 122, 255, 0.40), inset 0 1px 0 rgba(255, 255, 255, 0.40);
 
+  /* Ink (black) — primary actions & active states in the reference frames */
+  --ink-grad: linear-gradient(180deg, #1f2733 0%, #0f172a 100%);
+  --shadow-ink: 0 14px 30px rgba(15, 23, 42, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --shadow-ink-hover: 0 20px 42px rgba(15, 23, 42, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
   /* Legacy aliases — kept so any stray reference still looks right */
   --shadow-pink: var(--shadow);
   --pop: var(--shadow);
@@ -301,10 +306,10 @@ input, textarea, select { font-family: inherit; }
   color: var(--text);
 }
 .nav-item.active {
-  background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
+  background: var(--ink-grad);
   color: #fff;
   border-color: transparent;
-  box-shadow: var(--shadow-blue);
+  box-shadow: var(--shadow-ink);
   font-weight: 600;
 }
 .nav-icon { width: 19px; height: 19px; flex: none; }
@@ -405,11 +410,27 @@ input, textarea, select { font-family: inherit; }
   min-height: 44px;
 }
 .btn-primary {
+  background: var(--ink-grad);
+  color: #fff;
+  box-shadow: var(--shadow-ink);
+}
+.btn-primary:hover { transform: translateY(-2px) scale(1.01); box-shadow: var(--shadow-ink-hover); }
+/* Blue variant kept for explicit accent CTAs */
+.btn-blue {
   background: linear-gradient(180deg, var(--accent-2) 0%, var(--accent) 100%);
   color: #fff;
   box-shadow: var(--shadow-blue);
 }
-.btn-primary:hover { transform: translateY(-2px) scale(1.01); box-shadow: var(--shadow-blue-hover); }
+.btn-blue:hover { transform: translateY(-2px) scale(1.01); box-shadow: var(--shadow-blue-hover); }
+.btn-blue:active { transform: translateY(0) scale(0.98); }
+/* Green variant for success / get-started CTAs in frames */
+.btn-green {
+  background: linear-gradient(180deg, #34d36a 0%, #22a34e 100%);
+  color: #fff;
+  box-shadow: 0 14px 30px rgba(34, 163, 78, 0.32), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.btn-green:hover { transform: translateY(-2px) scale(1.01); }
+.btn-green:active { transform: translateY(0) scale(0.98); }
 .btn-primary:active { transform: translateY(0) scale(0.98); }
 .btn-ghost {
   background: var(--glass-subtle);

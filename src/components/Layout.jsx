@@ -1,8 +1,9 @@
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  IconHome, IconHub, IconProject, IconChat, IconDecision,
-  IconGraph, IconAdd, IconRocket, IconFigma, IconSearch, IconBell, IconSparkle,
+  IconHome, IconHub, IconProject, IconChat,
+  IconAdd, IconRocket, IconFigma, IconSearch, IconBell, IconSparkle,
 } from "./Icons";
+import Wordmark from "./Wordmark";
 
 const nav = [
   { section: "Overview" },
@@ -11,8 +12,6 @@ const nav = [
   { to: "/projects/fee-management", label: "Project Detail", icon: IconProject },
   { section: "Intelligence" },
   { to: "/chat", label: "Ask Design Bridge", icon: IconChat },
-  { to: "/decisions/21", label: "Decision Detail", icon: IconDecision },
-  { to: "/graph", label: "Knowledge Graph", icon: IconGraph },
   { section: "Workflow" },
   { to: "/add", label: "Add Knowledge", icon: IconAdd },
   { to: "/onboarding", label: "Onboarding Hub", icon: IconRocket },
@@ -39,11 +38,7 @@ export default function Layout({ children }) {
     <div className="app">
       <aside className="sidebar">
         <div className="brand">
-          <div className="brand-mark">D</div>
-          <div>
-            <div className="brand-name">Design Bridge</div>
-            <div className="brand-sub">Jedi</div>
-          </div>
+          <NavLink to="/"><Wordmark size={22} /></NavLink>
         </div>
 
         {nav.map((item, i) =>
@@ -63,7 +58,7 @@ export default function Layout({ children }) {
 
         <div className="sidebar-footer">
           <div className="user-chip">
-            <div className="avatar" style={{ background: "var(--accent)" }}>PS</div>
+            <div className="avatar" style={{ background: "linear-gradient(180deg, #e056c8, #b3309e)" }}>PS</div>
             <div style={{ minWidth: 0 }}>
               <div style={{ fontSize: 13.5, fontWeight: 600 }}>Priyal Shah</div>
               <div style={{ fontSize: 11.5, color: "var(--text-faint)" }}>Product Designer</div>
@@ -80,8 +75,8 @@ export default function Layout({ children }) {
             <input placeholder="Search projects, decisions, studies…" />
           </div>
           <div className="topbar-actions">
-            <NavLink to="/chat" className="btn btn-primary btn-sm">
-              <span style={{ width: 15, height: 15 }}><IconSparkle /></span>
+            <NavLink to="/chat" className="btn btn-ghost btn-sm">
+              <span style={{ width: 15, height: 15, color: "var(--accent)" }}><IconSparkle /></span>
               Ask AI
             </NavLink>
             <button className="icon-btn"><span style={{ width: 18, height: 18 }}><IconBell /></span></button>

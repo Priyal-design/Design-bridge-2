@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { guidelines } from "../data";
 import { IconClose, IconSparkle, IconArrow, IconCheck } from "../components/Icons";
+import Wordmark from "../components/Wordmark";
 
 export default function FigmaPlugin() {
   const [tab, setTab] = useState("ask");      // ask | add
@@ -54,10 +55,9 @@ export default function FigmaPlugin() {
         {/* Plugin panel — 380px */}
         <div className="plugin-panel" style={{ width: 380 }}>
           <div className="plugin-head">
-            <div className="brand-mark" style={{ width: 30, height: 30, fontSize: 15 }}>D</div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 14 }}>Design Bridge</div>
-              <div className="faint" style={{ fontSize: 11 }}>1 frame selected · Primary CTA</div>
+              <Wordmark size={15} />
+              <div className="faint" style={{ fontSize: 11, marginTop: 3 }}>1 frame selected · Primary CTA</div>
             </div>
             <button className="del-btn" style={{ position: "static" }}><span style={{ width: 14, height: 14 }}><IconClose /></span></button>
           </div>

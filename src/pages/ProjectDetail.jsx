@@ -28,7 +28,7 @@ export default function ProjectDetail() {
               <span>Last Updated <strong style={{ color: "var(--text)" }}>{project.updated}</strong></span>
             </div>
           </div>
-          <Link to="/chat" className="btn btn-primary">
+          <Link to="/chat" className="btn btn-green">
             <span style={{ width: 16, height: 16 }}><IconSparkle /></span> Ask about this project
           </Link>
         </div>
