@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { chatThread } from "../data";
-import { IconArrow, IconLink } from "../components/Icons";
+import { chatThread, responseSources, sourceTabs } from "../data";
+import { IconArrow, IconPlay, IconLink } from "../components/Icons";
+import MagicWand from "../components/MagicWand";
 
 function ConfRing({ value }) {
   const r = 24, c = 2 * Math.PI * r;
@@ -20,10 +21,98 @@ function ConfRing({ value }) {
   );
 }
 
+// Stacked donut chart for the feedback-analysis source card.
+function Donut({ segments }) {
+  const total = segments.reduce((s, x) => s + x.value, 0) || 1;
+  const r = 38, c = 2 * Math.PI * r;
+  let acc = 0;
+  return (
+    <svg width="120" height="120" viewBox="0 0 100 100" style={{ transform: "rotate(-90deg)" }}>
+      <circle cx="50" cy="50" r={r} fill="none" stroke="var(--panel-3)" strokeWidth="12" />
+      {segments.map((seg) => {
+        const len = (seg.value / total) * c;
+        const dash = `${len} ${c - len}`;
+        const off = -acc;
+        acc += len;
+        return (
+          <circle key={seg.label} cx="50" cy="50" r={r} fill="none"
+            stroke={seg.color} strokeWidth="12"
+            strokeDasharray={dash} strokeDashoffset={off} />
+        );
+      })}
+    </svg>
+  );
+}
+
+function SourceCard({ src }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="src-card">
+      <div className="src-eyebrow">{src.eyebrow}</div>
+
+      {src.kind === "figma" && (
+        <>
+          <div className="row between" style={{ alignItems: "center", marginTop: 6 }}>
+            <strong style={{ fontSize: 16 }}>{src.title}</strong>
+            <span className="badge badge-green">{src.badge}</span>
+          </div>
+          {src.image
+            ? <img src={src.image} alt={src.title} className="src-thumb src-thumb-img" />
+            : (
+              <div className="src-thumb src-thumb-figma">
+                {[...Array(8)].map((_, i) => <span key={i} className="frame-chip" />)}
+              </div>
+            )}
+        </>
+      )}
+
+      {src.kind === "video" && (
+        <>
+          <div className="src-sub">{src.sub}</div>
+          <div className="src-video">
+            <button className="src-play"><span style={{ width: 20, height: 20 }}><IconPlay /></span></button>
+            <span className="src-duration">{src.duration}</span>
+          </div>
+          <div className="src-caption">{src.caption}</div>
+          <div className="faint" style={{ fontSize: 12.5 }}>{src.author}</div>
+        </>
+      )}
+
+      {src.kind === "chart" && (
+        <>
+          <div className="src-sub">{src.sub}</div>
+          <div style={{ display: "grid", placeItems: "center", padding: "8px 0 4px" }}>
+            <Donut segments={src.segments} />
+          </div>
+          <strong style={{ fontSize: 15 }}>{src.title}</strong>
+          <p className="faint" style={{ fontSize: 12.5, lineHeight: 1.55, marginTop: 6 }}>{src.desc}</p>
+        </>
+      )}
+
+      {open && src.details && (
+        <div className="src-details">
+          {src.details.map((d) => (
+            <div key={d} className="list-item">
+              <span className="list-bullet" style={{ background: "var(--accent)" }} />
+              <span style={{ fontSize: 12.5 }}>{d}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <button className="src-more" onClick={() => setOpen((o) => !o)}>
+        {open ? "Show less" : "Show more"}
+      </button>
+    </div>
+  );
+}
+
 export default function Chat() {
   const [asked, setAsked] = useState(true);
   const [thinking, setThinking] = useState(false);
   const [input, setInput] = useState("");
+  const [tab, setTab] = useState("All");
+  const [showSources, setShowSources] = useState(false);
 
   const ask = () => {
     setThinking(true);
@@ -31,25 +120,18 @@ export default function Chat() {
     setTimeout(() => { setThinking(false); setAsked(true); }, 1400);
   };
 
-  return (
-    <div className="page chat-page">
-      {/* Orb */}
-      <div style={{ position: "relative", height: 180, marginBottom: 10 }}>
-        <div className="orb-big">
-          <div className="orb-ring" />
-          <div className="orb-ring r2" />
-          {[...Array(6)].map((_, i) => (
-            <span key={i} className="particle"
-              style={{
-                left: `${20 + i * 12}%`, top: `${30 + (i % 3) * 18}%`,
-                animationDelay: `${i * 0.5}s`,
-                background: ["#FF9500", "#007AFF", "#AF52DE"][i % 3],
-              }} />
-          ))}
-        </div>
-      </div>
+  const counts = useMemo(() => {
+    const c = { All: responseSources.length };
+    for (const t of sourceTabs.slice(1)) c[t] = responseSources.filter((s) => s.category === t).length;
+    return c;
+  }, []);
 
-      <div className="col gap20">
+  const shown = tab === "All" ? responseSources : responseSources.filter((s) => s.category === tab);
+
+  return (
+    <div className={"page chat-layout" + (showSources ? " with-sources" : "")}>
+      {/* ---------- Conversation ---------- */}
+      <div className="chat-col">
         {/* User question */}
         <div className="chat-bubble chat-user">{chatThread.question}</div>
 
@@ -65,7 +147,7 @@ export default function Chat() {
             <div className="chat-bubble chat-ai" style={{ maxWidth: "100%" }}>
               <div className="row between mb12" style={{ alignItems: "center" }}>
                 <div className="row gap10" style={{ alignItems: "center" }}>
-                  <div className="ai-orb-sm" />
+                  <MagicWand size={42} />
                   <strong>Design Bridge</strong>
                 </div>
                 <div className="row gap8" style={{ alignItems: "center" }}>
@@ -76,13 +158,16 @@ export default function Chat() {
                   </div>
                 </div>
               </div>
-              <p style={{ fontSize: 15.5, lineHeight: 1.6 }}>{chatThread.answer}</p>
+
+              {chatThread.answer.map((para, i) => (
+                <p key={i} style={{ fontSize: 15.5, lineHeight: 1.6, marginTop: i ? 14 : 0 }}>{para}</p>
+              ))}
 
               {/* Metrics */}
-              <div className="row gap16 mt16 wrap">
+              <div className="row gap16 mt24 wrap">
                 {chatThread.metrics.map((m) => (
-                  <div key={m.label} className="card" style={{ padding: "12px 16px", flex: 1, minWidth: 160 }}>
-                    <div className="faint" style={{ fontSize: 12 }}>{m.label}</div>
+                  <div key={m.label} className="metric-panel">
+                    <div className="faint" style={{ fontSize: 12.5 }}>{m.label}</div>
                     <div className="metric-arrow mt8">
                       <span className="metric-from" style={{ fontSize: 15 }}>{m.from}</span>
                       <span className="arrow" style={{ width: 15, height: 15 }}><IconArrow /></span>
@@ -91,28 +176,26 @@ export default function Chat() {
                   </div>
                 ))}
               </div>
+
+              {/* Toggle the Response Sources rail */}
+              <button className="btn btn-ghost btn-sm open-sources-btn" onClick={() => setShowSources((s) => !s)}>
+                <span style={{ width: 15, height: 15 }}><IconLink /></span>
+                {showSources ? "Hide Sources" : "Open Sources"}
+              </button>
             </div>
 
-            {/* Evidence */}
-            <div className="card">
-              <div className="section-title row gap8" style={{ alignItems: "center" }}>
-                <span style={{ width: 15, height: 15 }}><IconLink /></span> Evidence
-              </div>
-              <div className="grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
-                {chatThread.evidence.map((e) => (
-                  <Link key={e.title} to="/decisions/21" className="evidence-chip">
-                    <span style={{ fontSize: 18 }}>{e.icon}</span>
-                    <div>
-                      <div style={{ fontWeight: 600 }}>{e.title}</div>
-                      <div className="faint" style={{ fontSize: 11.5 }}>{e.type}</div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+            {/* Input */}
+            <div className="ai-input" style={{ padding: "8px 8px 8px 16px" }}>
+              <input value={input} onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && ask()}
+                placeholder="Ask Design Bridge anything…" />
+              <button className="btn btn-primary btn-sm" onClick={ask}>
+                Send <span style={{ width: 14, height: 14 }}><IconArrow /></span>
+              </button>
             </div>
 
             {/* Related questions */}
-            <div>
+            <div className="mt8">
               <div className="section-title">Related Questions</div>
               <div className="col gap8">
                 {chatThread.related.map((q) => (
@@ -124,17 +207,41 @@ export default function Chat() {
             </div>
           </>
         )}
-
-        {/* Input */}
-        <div className="ai-input" style={{ padding: "8px 8px 8px 16px", position: "sticky", bottom: 20 }}>
-          <input value={input} onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && ask()}
-            placeholder="Ask Design Bridge anything…" />
-          <button className="btn btn-primary btn-sm" onClick={ask}>
-            Send <span style={{ width: 14, height: 14 }}><IconArrow /></span>
-          </button>
-        </div>
       </div>
+
+      {/* ---------- Response Sources rail ---------- */}
+      {showSources && (
+      <aside className="sources-panel">
+        <div className="sources-head">
+          <span className="src-badge"><span style={{ width: 17, height: 17 }}><IconLink /></span></span>
+          <h3>Response Sources</h3>
+        </div>
+        <div className="faint" style={{ fontSize: 13, marginBottom: 16 }}>
+          {responseSources.length} verified sources
+        </div>
+
+        <div className="src-tabs">
+          {sourceTabs.map((t) => {
+            const n = counts[t] || 0;
+            const disabled = t !== "All" && n === 0;
+            return (
+              <button
+                key={t}
+                className={"src-tab" + (tab === t ? " active" : "") + (disabled ? " disabled" : "")}
+                onClick={() => !disabled && setTab(t)}
+              >
+                {t}
+                {n > 0 && <span className="src-count">{n}</span>}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="col gap16">
+          {shown.map((src) => <SourceCard key={src.id} src={src} />)}
+        </div>
+      </aside>
+      )}
     </div>
   );
 }

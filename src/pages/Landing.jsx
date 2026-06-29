@@ -52,9 +52,9 @@ export default function Landing() {
               </button>
             </div>
             <div className="hero-stats">
-              <div className="hero-stat"><div className="n">1,482</div><div className="l">Decisions captured</div></div>
-              <div className="hero-stat"><div className="n">221</div><div className="l">Research studies</div></div>
-              <div className="hero-stat"><div className="n">92%</div><div className="l">Knowledge coverage</div></div>
+              <div className="hero-stat"><div className="l">Decisions captured</div></div>
+              <div className="hero-stat"><div className="l">Research studies</div></div>
+              <div className="hero-stat"><div className="l">Knowledge coverage</div></div>
             </div>
           </div>
 

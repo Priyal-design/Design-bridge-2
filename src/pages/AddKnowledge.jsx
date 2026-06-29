@@ -1,22 +1,29 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { knowledgeTypes } from "../data";
-import { IconCheck, IconArrow } from "../components/Icons";
+import { IconCheck, IconArrow, IconSparkle, IconLink, IconPlay, IconClose } from "../components/Icons";
 import Lottie from "../components/Lottie";
 import published from "../assets/published.json";
 
 const steps = ["Choose", "Details", "Publish"];
 
+// Tags Design Bridge suggests after reading the title & description
+const suggestedTags = ["cta", "accessibility", "conversion", "above-the-fold", "checkout", "usability", "mobile", "heatmap"];
+
 const relatedProjects = [
-  { name: "Fee Management System", dept: "Finance", desc: "Shares the checkout CTA pattern", color: "#007AFF", initials: "FM" },
-  { name: "Patient Appointment Portal", dept: "Medical", desc: "Similar above-fold action study", color: "#34C759", initials: "PP" },
-  { name: "Photo Asset Management", dept: "Photography", desc: "Referenced the same heatmap method", color: "#AF52DE", initials: "PA" },
+  { id: "fee-management", name: "Fee Management System", dept: "Finance", updated: "3 days ago", desc: "Shares the checkout CTA pattern and above-the-fold action study.", color: "#007AFF" },
+  { id: "photo-asset", name: "Photo Asset Management", dept: "Photography", updated: "1 week ago", desc: "Referenced the same heatmap method to validate the primary action.", color: "#AF52DE" },
+  { id: "microscope-config", name: "Microscope Configuration Portal", dept: "Microscopy", updated: "2 weeks ago", desc: "Similar layout reshuffle to surface the key task above the fold.", color: "#34C759" },
 ];
 
 export default function AddKnowledge() {
   const [step, setStep] = useState(0);
   const [type, setType] = useState("decision");
   const [linked, setLinked] = useState({ "Fee Management System": true });
+  const [tags, setTags] = useState(["cta", "accessibility", "conversion"]);
+
+  const toggleTag = (t) =>
+    setTags((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
 
   return (
     <div className="page" style={{ maxWidth: 920 }}>
@@ -79,34 +86,92 @@ export default function AddKnowledge() {
               <div className="dropzone">📎 Drag &amp; drop files here, or <span style={{ color: "var(--accent)" }}>browse</span></div>
             </div>
             <div className="field" style={{ marginBottom: 0 }}><label>Tags</label>
-              <div className="row gap8 wrap">
-                {["cta", "accessibility", "conversion"].map((t) => <span key={t} className="tag">#{t}</span>)}
-                <input style={{ flex: 1, minWidth: 140 }} placeholder="Add tags…" />
+              {/* Upper box — selected tags; click ✕ to remove */}
+              <div className="tag-input-box">
+                {tags.length === 0 && <span className="tag-empty">No tags yet — pick from suggestions below.</span>}
+                {tags.map((t) => (
+                  <span key={t} className="tag-chip">
+                    #{t}
+                    <button type="button" className="tag-chip-x" aria-label={`Remove ${t}`} onClick={() => toggleTag(t)}>
+                      <span style={{ width: 12, height: 12, display: "grid" }}><IconClose /></span>
+                    </button>
+                  </span>
+                ))}
+              </div>
+
+              {/* Generate-tags suggestion box — click a tag to select / deselect it above */}
+              <div className="gen-tags">
+                <div className="gen-tags-head">
+                  <span className="gen-tags-ic"><IconSparkle /></span>
+                  <div>
+                    <div className="gen-tags-title">Generate tags</div>
+                    <div className="gen-tags-sub">Create tags for the project as per the information given</div>
+                  </div>
+                </div>
+                <div className="gen-tags-pills">
+                  {suggestedTags.map((t) => {
+                    const on = tags.includes(t);
+                    return (
+                      <button type="button" key={t} className={"suggest-pill" + (on ? " on" : "")} onClick={() => toggleTag(t)}>
+                        <span className="sp-ic">{on ? <IconCheck /> : <span className="sp-plus">+</span>}</span>
+                        {t}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Related projects suggestion */}
+          {/* Link related projects */}
           <div className="card">
-            <div className="row between mb16" style={{ alignItems: "center" }}>
-              <div className="section-title" style={{ margin: 0 }}>Related projects we found</div>
-              <span className="badge badge-violet">3 suggestions</span>
+            <div className="row between mb16" style={{ alignItems: "flex-start" }}>
+              <div>
+                <div className="section-title" style={{ margin: 0 }}>Link related projects</div>
+                <div className="faint" style={{ fontSize: 12.5, marginTop: 4 }}>
+                  We found {relatedProjects.length} projects that might be relevant — view or link them.
+                </div>
+              </div>
+              <span className="badge badge-violet">{relatedProjects.length} suggestions</span>
             </div>
-            <div className="col gap10">
+            <div className="col gap12">
               {relatedProjects.map((p) => {
                 const on = !!linked[p.name];
                 return (
-                  <button key={p.name} className={"related-row" + (on ? " on" : "")}
-                    onClick={() => setLinked((l) => ({ ...l, [p.name]: !on }))}>
-                    <div className="avatar" style={{ width: 38, height: 38, background: p.color, fontSize: 12 }}>{p.initials}</div>
-                    <div style={{ flex: 1, textAlign: "left" }}>
-                      <div style={{ fontWeight: 600, fontSize: 14 }}>{p.name}</div>
-                      <div className="faint" style={{ fontSize: 12.5 }}>{p.desc}</div>
+                  <div key={p.name} className={"linkproj-row" + (on ? " on" : "")}>
+                    {/* UI screen of the project */}
+                    <div className="linkproj-screen" style={{ "--sc": p.color }}>
+                      <div className="sc-bar"><span /><span /><span /></div>
+                      <div className="sc-body">
+                        <div className="sc-line w70" />
+                        <div className="sc-block" />
+                        <div className="sc-line w50" />
+                        <div className="sc-line w40" />
+                      </div>
                     </div>
-                    <span className={"link-pill" + (on ? " on" : "")}>
-                      {on ? <><span style={{ width: 13, height: 13 }}><IconCheck /></span> Linked</> : "Add project"}
-                    </span>
-                  </button>
+                    {/* Header + info */}
+                    <div className="linkproj-info">
+                      <div className="linkproj-name">{p.name}</div>
+                      <div className="linkproj-meta">
+                        <span className="dept-dot" style={{ background: p.color }} />{p.dept} · Updated {p.updated}
+                      </div>
+                      <div className="linkproj-desc">{p.desc}</div>
+                    </div>
+                    {/* View + Link buttons on the right */}
+                    <div className="linkproj-actions">
+                      <Link to={`/projects/${p.id}`} className="btn btn-ghost btn-sm linkproj-btn">
+                        <span style={{ width: 15, height: 15, display: "grid" }}><IconPlay /></span> View
+                      </Link>
+                      <button
+                        type="button"
+                        className={"btn btn-sm linkproj-btn " + (on ? "btn-green" : "btn-primary")}
+                        onClick={() => setLinked((l) => ({ ...l, [p.name]: !on }))}>
+                        {on
+                          ? <><span style={{ width: 15, height: 15, display: "grid" }}><IconCheck /></span> Linked</>
+                          : <><span style={{ width: 15, height: 15, display: "grid" }}><IconLink /></span> Link</>}
+                      </button>
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -123,7 +188,7 @@ export default function AddKnowledge() {
             Your entry appears instantly across the Knowledge Hub, graph, and AI search.
           </p>
           <div className="row gap12 mt24" style={{ justifyContent: "center" }}>
-            <button className="btn btn-ghost" onClick={() => setStep(0)}>← Go Back</button>
+            <button className="btn btn-ghost" onClick={() => setStep(1)}>← Go Back</button>
             <Link to="/hub" className="btn btn-primary">View in Hub</Link>
           </div>
         </div>
@@ -131,10 +196,10 @@ export default function AddKnowledge() {
 
       {/* Nav */}
       {step < 2 && (
-        <div className="row between mt24">
-          <button className="btn btn-ghost" disabled={step === 0}
-            style={{ opacity: step === 0 ? 0.4 : 1 }}
-            onClick={() => setStep((s) => Math.max(0, s - 1))}>← Back</button>
+        <div className="row between mt24" style={{ justifyContent: step === 0 ? "flex-end" : "space-between" }}>
+          {step > 0 && (
+            <button className="btn btn-ghost" onClick={() => setStep((s) => Math.max(0, s - 1))}>← Back</button>
+          )}
           <button className="btn btn-primary" onClick={() => setStep((s) => s + 1)}>
             {step === 1 ? "Publish" : "Continue"} <span style={{ width: 16, height: 16 }}><IconArrow /></span>
           </button>

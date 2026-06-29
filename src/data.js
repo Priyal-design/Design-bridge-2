@@ -1,5 +1,8 @@
 // ----- All fake data for Design Bridge V2 -----
 
+import feemgt1 from "./images/Feemgt1.jpg";
+import feemgt2 from "./images/Feemgt2.jpg";
+
 export const company = "Jedi";
 
 export const departmentColors = {
@@ -30,6 +33,10 @@ export const projects = [
     decisions: 27,
     updated: "2 days ago",
     favorite: true,
+    team: "Design system team",
+    created: "10th May'26",
+    createdISO: "2026-05-10",
+    tags: ["Payments", "Workflow", "Internal Tools"],
     summary:
       "Redesigning the internal fee management workflow to reduce processing errors and improve transparency.",
   },
@@ -46,6 +53,10 @@ export const projects = [
     decisions: 33,
     updated: "Yesterday",
     favorite: true,
+    team: "Beyond team",
+    created: "22nd Apr'26",
+    createdISO: "2026-04-22",
+    tags: ["Hardware", "Calibration", "Lab"],
     summary:
       "A configuration portal that lets lab technicians calibrate and save microscope presets across devices.",
   },
@@ -62,6 +73,10 @@ export const projects = [
     decisions: 14,
     updated: "4 days ago",
     favorite: false,
+    team: "Aurora team",
+    created: "1st Jun'26",
+    createdISO: "2026-06-01",
+    tags: ["Assets", "Tagging", "Rights"],
     summary:
       "Centralizing photo assets with smart tagging, rights management and fast cross-team retrieval.",
   },
@@ -78,10 +93,82 @@ export const projects = [
     decisions: 41,
     updated: "Today",
     favorite: true,
+    team: "Aventurine team",
+    created: "15th Mar'26",
+    createdISO: "2026-03-15",
+    tags: ["Booking", "Patients", "Reminders"],
     summary:
       "A patient-facing portal for booking, rescheduling and managing medical appointments with reminders.",
   },
 ];
+
+// Contributors shown as avatar stacks on each Knowledge Hub card (initials, color, full name, role)
+export const projectTeams = {
+  "fee-management": [
+    { ini: "SL", color: "#007AFF", name: "Sarah Lee", role: "Product Manager" },
+    { ini: "AK", color: "#AF52DE", name: "Alex Kim", role: "UX Designer" },
+    { ini: "KM", color: "#FF3B30", name: "Kai Morgan", role: "Researcher" },
+  ],
+  "microscope-config": [
+    { ini: "MV", color: "#FF9500", name: "Marcus Vogel", role: "Lead Designer" },
+    { ini: "DC", color: "#34C759", name: "David Chen", role: "Engineer" },
+  ],
+  "photo-asset": [
+    { ini: "LO", color: "#AF52DE", name: "Lena Ortiz", role: "Product Designer" },
+    { ini: "PS", color: "#e056c8", name: "Priyal Shah", role: "Product Designer" },
+    { ini: "AK", color: "#007AFF", name: "Alex Kim", role: "UX Designer" },
+  ],
+  "patient-portal": [
+    { ini: "AO", color: "#34C759", name: "Amara Osei", role: "Clinical Lead" },
+    { ini: "GS", color: "#007AFF", name: "Grace Stone", role: "Researcher" },
+  ],
+};
+
+// Distinct tag + team option lists for the search filter
+export const allTags = [...new Set(projects.flatMap((p) => p.tags || []))].sort();
+export const allTeams = [...new Set(projects.map((p) => p.team).filter(Boolean))].sort();
+
+export const emptyProjectFilter = {
+  query: "",
+  tags: [],
+  team: "",
+  createdFrom: "",
+  createdTo: "",
+  sortBy: "name", // "name" | "created" | "team"
+  sortDir: "asc", // "asc" | "desc"
+};
+
+export function isFilterActive(f) {
+  return Boolean(
+    f.query || f.tags.length || f.team || f.createdFrom || f.createdTo ||
+    f.sortBy !== "name" || f.sortDir !== "asc"
+  );
+}
+
+// Shared filtering + sorting used by the Knowledge Hub grid and the global search
+export function filterAndSortProjects(list, f) {
+  const q = f.query.trim().toLowerCase();
+  let out = list.filter((p) => {
+    if (q) {
+      const hay = (p.name + " " + p.summary + " " + (p.tags || []).join(" ")).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    if (f.tags.length && !f.tags.every((t) => (p.tags || []).includes(t))) return false;
+    if (f.team && p.team !== f.team) return false;
+    if (f.createdFrom && (p.createdISO || "") < f.createdFrom) return false;
+    if (f.createdTo && (p.createdISO || "") > f.createdTo) return false;
+    return true;
+  });
+
+  out = out.slice().sort((a, b) => {
+    let cmp = 0;
+    if (f.sortBy === "name") cmp = a.name.localeCompare(b.name);
+    else if (f.sortBy === "created") cmp = (a.createdISO || "").localeCompare(b.createdISO || "");
+    else if (f.sortBy === "team") cmp = (a.team || "").localeCompare(b.team || "");
+    return f.sortDir === "asc" ? cmp : -cmp;
+  });
+  return out;
+}
 
 export const kpis = [
   { label: "Projects", value: "42", trend: "+3 this month", glyph: "📁", color: "#007AFF" },
@@ -98,11 +185,11 @@ export const knowledgeGaps = [
 ];
 
 export const activity = [
-  { who: "Sarah", action: "uploaded Study #12", time: "2 hours ago", color: "#007AFF", icon: "🔬" },
-  { who: "Alex", action: "approved Decision #21", time: "5 hours ago", color: "#34C759", icon: "✓" },
-  { who: "System", action: "Sprint 14 completed", time: "Yesterday", color: "#AF52DE", icon: "🏁" },
-  { who: "Priya", action: "added Heatmap Analysis to Fee Management", time: "Yesterday", color: "#AF52DE", icon: "📊" },
-  { who: "David", action: "linked SAP Payment API spec", time: "2 days ago", color: "#FF9500", icon: "🔗" },
+  { who: "Sarah", action: "uploaded Study #12 Customer research", time: "2 hours ago", dept: "Microscopy", color: "#007AFF", icon: "🔬" },
+  { who: "Alex", action: "approved comments on Homepage redesign #21", time: "5 hours ago", dept: "Medical", color: "#34C759", icon: "✓" },
+  { who: "Design System", action: "Sprint 14 updated with new components", time: "Yesterday", dept: "Medical", color: "#AF52DE", icon: "🏁" },
+  { who: "Priya", action: "added Heatmap Analysis to Fee Management", time: "Yesterday", dept: "Finance", color: "#AF52DE", icon: "📊" },
+  { who: "David", action: "linked SAP Payment API spec", time: "2 days ago", dept: "Finance", color: "#FF9500", icon: "🔗" },
 ];
 
 export const coverageChart = [
@@ -159,11 +246,69 @@ export const jira = {
   ],
 };
 
+// Figma file previews shown in the Project Detail center column
+export const figmaFiles = [
+  { name: "Fee mgt v1 design", status: "Rejected", badge: "badge-pink", image: feemgt1 },
+  { name: "Fee mgt v2 design", status: "Final design", badge: "badge-green", image: feemgt2 },
+];
+
+// Feedback Analysis study (donut) shown in the center column
+export const feedbackAnalysis = {
+  eyebrow: "Feedback Analysis",
+  study: "#11 Study",
+  title: "Customer feedback analysis - Q2",
+  desc: "Feedback from customers and partners during April–June 2026 through these channels: in-app feedback, support, and sales calls. Most feedback came in from customer support and in-app feedback.",
+  segments: [
+    { label: "Customer Support", value: 13, color: "#0fb5a8" },
+    { label: "In-app feedback", value: 9, color: "#34c759" },
+    { label: "Sales", value: 2, color: "#007aff" },
+  ],
+  // Extra detail revealed by "Show more"
+  period: "April – June 2026",
+  sample: 24,
+  insights: [
+    "Most friction reported around fee breakdown clarity before checkout.",
+    "Customers requested a single summary of all charges on one screen.",
+    "Sales flagged enterprise clients wanting exportable fee statements.",
+    "In-app feedback peaked after the v2 CTA placement change.",
+  ],
+  sentiment: [
+    { label: "Positive", value: 58, color: "#34c759" },
+    { label: "Neutral", value: 29, color: "#94a3b8" },
+    { label: "Negative", value: 13, color: "#ff3b30" },
+  ],
+};
+
+// Right-column cards for Project Detail
+export const projectIssues = [
+  { count: 1, label: "File missing metrics" },
+  { count: 2, label: "Changes pending" },
+  { count: 1, label: "Missing post testing updates" },
+];
+
+export const projectComments = [
+  { who: "Adrian", text: "Move CTA above fold. Find a sim…", color: "#AF52DE" },
+  { who: "Sarah", text: "Approved after testing.", color: "#007AFF" },
+  { who: "Priya", text: "Users missed payment status.", color: "#AF52DE" },
+];
+
+export const usabilityVideos = [
+  { caption: "Fee version 1 tested amongst 10 groups", author: "Adrian", duration: "00:34", tint: "#e2e8f0" },
+  { caption: "Checkout flow walkthrough — first-time users", author: "Sarah", duration: "01:12", tint: "#dfe6f0" },
+  { caption: "Above-the-fold CTA placement A/B run", author: "Priya", duration: "00:48", tint: "#e9e2f3" },
+  { caption: "Mobile payment flow — think-aloud session", author: "David", duration: "02:05", tint: "#e2efe6" },
+  { caption: "Error recovery & validation messaging", author: "Alex", duration: "00:57", tint: "#f3ece2" },
+  { caption: "Screen-reader accessibility pass", author: "Marcus", duration: "01:33", tint: "#e2eef3" },
+];
+
 export const chatThread = {
   question: "Why was the CTA moved above the fold?",
   confidence: 94,
-  answer:
-    "Users failed to notice the CTA in the previous location. Heatmap analysis and usability testing demonstrated significantly higher visibility above the fold.",
+  answer: [
+    "Users failed to notice the CTA in the previous location. Heatmap analysis and usability testing demonstrated significantly higher visibility above the fold. I've found several relevant sources related to your question. The information is verified against our design documentation, research findings, and decision logs.",
+    "Our team has documented this extensively, and I've pulled together insights from 5 different sources including design files, research studies, and decision logs.",
+    "Would you like me to explain any specific aspect in more detail?",
+  ],
   evidence: [
     { title: "Research Study #11", type: "Study", icon: "🔬" },
     { title: "Heatmap Analysis", type: "Analysis", icon: "📊" },
@@ -180,6 +325,62 @@ export const chatThread = {
     "Who approved this?",
   ],
 };
+
+// Tabs for the "Response Sources" rail next to a Design Bridge answer.
+// Counts are derived from responseSources; order is fixed to match the design.
+export const sourceTabs = ["All", "Figma", "Research", "Decisions", "Docs"];
+
+// Each source belongs to one tab category and renders one of a few card kinds.
+export const responseSources = [
+  {
+    id: "fee-mgt-v2",
+    category: "Figma",
+    kind: "figma",
+    eyebrow: "Figma File",
+    title: "Fee Mgt V2 Design",
+    badge: "Final design",
+    image: feemgt2,
+    details: [
+      "8 frames covering the full checkout and fee-summary flow.",
+      "CTA moved above the fold in frame 3 after Study #11.",
+      "Last edited 2 days ago by Alex Kim.",
+    ],
+  },
+  {
+    id: "study-4",
+    category: "Research",
+    kind: "video",
+    eyebrow: "Usability Testing",
+    sub: "#4 Study",
+    duration: "00:34",
+    caption: "Fee version 1 tested amongst 10 groups",
+    author: "Adrian",
+    details: [
+      "10 moderated sessions, 5–7 min each.",
+      "7 of 10 users missed the CTA in the original layout.",
+      "Average task completion improved from 62% to 89% in v2.",
+    ],
+  },
+  {
+    id: "study-11",
+    category: "Research",
+    kind: "chart",
+    eyebrow: "Feedback Analysis",
+    sub: "#11 Study",
+    title: "Customer feedback analysis - Q2",
+    desc: "Analysis of incoming feedback from customers and partners during April–June 2026 across in-app feedback, support, and sales calls. Most feedback came in from customer support and in-app feedback.",
+    segments: [
+      { label: "In-app feedback", value: 9, color: "#34c759" },
+      { label: "Customer Support", value: 13, color: "#0fb5a8" },
+      { label: "Sales", value: 2, color: "#007aff" },
+    ],
+    details: [
+      "24 total responses analysed across three channels.",
+      "Fee-breakdown clarity was the most common request.",
+      "Sentiment: 58% positive, 29% neutral, 13% negative.",
+    ],
+  },
+];
 
 export const decision = {
   id: 21,
@@ -232,6 +433,92 @@ export const onboarding = {
     "The team is currently validating the beta release.",
   ],
 };
+
+// Per-project onboarding workspaces — the tree on the right selects one of these,
+// and the responsibilities table + active-project workspace update to match.
+export const onboardingWorkspaces = [
+  {
+    name: "Fee Management",
+    children: ["Checkout flow", "Fee schedule", "Refund policy"],
+    manager: { name: "John Chen", role: "Design Manager / PM" },
+    responsibilities: [
+      { area: "Contracting", owner: "Sarah Lee", cat: "Finance Owner", color: "#007AFF" },
+      { area: "Design", owner: "Alex Kim", cat: "UX Owner", color: "#AF52DE" },
+      { area: "Engineering", owner: "David Chen", cat: "Eng. Owner", color: "#FF9500" },
+      { area: "Manager", owner: "John Chen", cat: "PM Owner", color: "#34C759" },
+    ],
+    deadlines: [
+      { t: "Contract Review", due: "Nov 1", badge: "badge-yellow", state: "In progress" },
+      { t: "Validate Prototype", due: "Nov 6", badge: "badge-blue", state: "Queued" },
+      { t: "Finalize Design Costs", due: "Nov 7", badge: "badge-pink", state: "Blocked" },
+    ],
+    tasks: [
+      { t: "Validate UI Prototype", badge: "badge-blue", state: "In Review" },
+      { t: "Input Final Design Costs", badge: "badge-yellow", state: "In progress" },
+      { t: "Publish Fee Schedule", badge: "badge-green", state: "Done" },
+    ],
+    quickActions: ["Propose Fee Agreement", "Review PM Actions", "Configure Workflow"],
+    updates: [
+      { who: "David Chen", text: "updated the doc-fee scope timeline", time: "2h" },
+      { who: "Sarah Lee", text: "approved the refund policy decision", time: "5h" },
+      { who: "Alex Kim", text: "added 3 prototypes to Checkout flow", time: "1d" },
+    ],
+  },
+  {
+    name: "Patient Portal Workspace",
+    children: ["Booking calendar", "Reminders", "Visit history"],
+    manager: { name: "Dr. Amara Osei", role: "Clinical Product Manager" },
+    responsibilities: [
+      { area: "Scheduling", owner: "Grace Stone", cat: "Care Owner", color: "#007AFF" },
+      { area: "Design", owner: "Lena Ortiz", cat: "UX Owner", color: "#AF52DE" },
+      { area: "Engineering", owner: "David Chen", cat: "Eng. Owner", color: "#FF9500" },
+      { area: "Manager", owner: "Dr. Amara Osei", cat: "PM Owner", color: "#34C759" },
+    ],
+    deadlines: [
+      { t: "HIPAA Review", due: "Nov 3", badge: "badge-pink", state: "Blocked" },
+      { t: "Reminder Flow QA", due: "Nov 9", badge: "badge-yellow", state: "In progress" },
+      { t: "Booking Launch", due: "Nov 14", badge: "badge-blue", state: "Queued" },
+    ],
+    tasks: [
+      { t: "Wire Booking Calendar", badge: "badge-blue", state: "In Review" },
+      { t: "Draft Reminder Copy", badge: "badge-yellow", state: "In progress" },
+      { t: "Accessibility Audit", badge: "badge-green", state: "Done" },
+    ],
+    quickActions: ["Request Clinical Sign-off", "Review PM Actions", "Schedule User Test"],
+    updates: [
+      { who: "Grace Stone", text: "logged 4 new booking-flow findings", time: "3h" },
+      { who: "Dr. Amara Osei", text: "approved the reminder cadence", time: "6h" },
+      { who: "Lena Ortiz", text: "shared the visit-history wireframes", time: "2d" },
+    ],
+  },
+  {
+    name: "Microscopy Dashboard Redesign",
+    children: ["Presets", "Calibration", "Device sync"],
+    manager: { name: "Marcus Vogel", role: "Lead Product Manager" },
+    responsibilities: [
+      { area: "Calibration", owner: "Marcus Vogel", cat: "Lab Owner", color: "#007AFF" },
+      { area: "Design", owner: "Priyal Shah", cat: "UX Owner", color: "#AF52DE" },
+      { area: "Engineering", owner: "David Chen", cat: "Eng. Owner", color: "#FF9500" },
+      { area: "Manager", owner: "Marcus Vogel", cat: "PM Owner", color: "#34C759" },
+    ],
+    deadlines: [
+      { t: "Preset Schema Review", due: "Nov 4", badge: "badge-yellow", state: "In progress" },
+      { t: "Calibration Test Run", due: "Nov 10", badge: "badge-blue", state: "Queued" },
+      { t: "Device Sync Spec", due: "Nov 12", badge: "badge-pink", state: "Blocked" },
+    ],
+    tasks: [
+      { t: "Prototype Preset Manager", badge: "badge-blue", state: "In Review" },
+      { t: "Validate Calibration UI", badge: "badge-yellow", state: "In progress" },
+      { t: "Document Device Presets", badge: "badge-green", state: "Done" },
+    ],
+    quickActions: ["Propose Preset Standard", "Review PM Actions", "Sync Lab Devices"],
+    updates: [
+      { who: "Marcus Vogel", text: "updated the calibration tolerance spec", time: "1h" },
+      { who: "Priyal Shah", text: "added preset manager mockups", time: "4h" },
+      { who: "David Chen", text: "linked the device-sync API doc", time: "1d" },
+    ],
+  },
+];
 
 export const features = [
   { title: "Design Memory", desc: "Preserve the rationale behind every design decision.", icon: "🧠", color: "#007AFF" },

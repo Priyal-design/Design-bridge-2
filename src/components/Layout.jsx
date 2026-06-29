@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   IconHome, IconHub, IconProject, IconChat,
-  IconAdd, IconRocket, IconFigma, IconSearch, IconBell, IconSparkle,
+  IconAdd, IconRocket, IconFigma, IconBell, IconSparkle,
 } from "./Icons";
 import Wordmark from "./Wordmark";
+import SearchBar from "./SearchBar";
+import { emptyProjectFilter } from "../data";
 
 const nav = [
   { section: "Overview" },
@@ -30,6 +33,7 @@ const titles = {
 
 export default function Layout({ children }) {
   const loc = useLocation();
+  const [search, setSearch] = useState({ ...emptyProjectFilter });
   let title = titles[loc.pathname] || "Design Bridge";
   if (loc.pathname.startsWith("/projects")) title = "Project Detail";
   if (loc.pathname.startsWith("/decisions")) title = "Decision Detail";
@@ -70,10 +74,12 @@ export default function Layout({ children }) {
       <div className="main">
         <header className="topbar">
           <h1>{title}</h1>
-          <div className="topbar-search">
-            <span style={{ width: 16, height: 16, color: "var(--text-faint)" }}><IconSearch /></span>
-            <input placeholder="Search projects, decisions, studies…" />
-          </div>
+          <SearchBar
+            value={search}
+            onChange={setSearch}
+            placeholder="Search projects, decisions, studies…"
+            variant="global"
+          />
           <div className="topbar-actions">
             <NavLink to="/chat" className="btn btn-ghost btn-sm">
               <span style={{ width: 15, height: 15, color: "var(--accent)" }}><IconSparkle /></span>

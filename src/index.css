@@ -306,10 +306,10 @@ input, textarea, select { font-family: inherit; }
   color: var(--text);
 }
 .nav-item.active {
-  background: var(--ink-grad);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: var(--shadow-ink);
+  background: #fff;
+  color: #0f172a;
+  border-color: var(--glass-border-strong);
+  box-shadow: var(--shadow-subtle);
   font-weight: 600;
 }
 .nav-icon { width: 19px; height: 19px; flex: none; }

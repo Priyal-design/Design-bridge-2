@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { IconArrow, IconCheck, IconProject } from "../components/Icons";
+import { onboardingWorkspaces } from "../data";
+import { IconArrow, IconCheck, IconProject, IconFigma } from "../components/Icons";
 
 const chips = [
   ["Current Sprint", "Sprint 14"],
@@ -7,40 +9,13 @@ const chips = [
   ["Primary Team", "Core Experiences"],
 ];
 
-const tree = [
-  { name: "Fee Management", open: true, children: ["Checkout flow", "Fee schedule", "Refund policy"] },
-  { name: "Patient Portal Workspace", open: false, children: ["Booking calendar", "Reminders"] },
-  { name: "Microscopy Dashboard Redesign", open: false, children: ["Presets", "Calibration"] },
-];
-
-const responsibilities = [
-  { area: "Co-Funding", owner: "Sarah Lee", cat: "Finance Owner", pm: "John Chen", color: "#007AFF" },
-  { area: "Design", owner: "Alex Kim", cat: "UX Owner", pm: "John Chen", color: "#AF52DE" },
-  { area: "Engineering", owner: "David Chen", cat: "Eng. Owner", pm: "Manager", color: "#FF9500" },
-  { area: "Manager", owner: "John Chen", cat: "PM Owner", pm: "Manager", color: "#34C759" },
-];
-
-const deadlines = [
-  { t: "Contract Review", due: "Nov 1", badge: "badge-yellow", state: "In progress" },
-  { t: "Validate Prototype", due: "Nov 6", badge: "badge-blue", state: "Queued" },
-  { t: "Finalize Design Costs", due: "Nov 7", badge: "badge-pink", state: "Blocked" },
-];
-
-const tasks = [
-  { t: "Validate UI Prototype", badge: "badge-blue", state: "In Review" },
-  { t: "Input Final Design Costs", badge: "badge-yellow", state: "In progress" },
-  { t: "Publish Fee Schedule", badge: "badge-green", state: "Done" },
-];
-
-const quickActions = ["Propose Fee Agreement", "Review PM Actions", "Configure Workflow"];
-
-const updates = [
-  { who: "David Chen", text: "updated the doc-fee scope timeline", time: "2h" },
-  { who: "Sarah Lee", text: "approved the refund policy decision", time: "5h" },
-  { who: "Alex Kim", text: "added 3 prototypes to Checkout flow", time: "1d" },
-];
+const initials = (name) => name.replace(/^Dr\.\s*/, "").split(" ").map((n) => n[0]).join("").slice(0, 2);
 
 export default function Onboarding() {
+  const [selected, setSelected] = useState(onboardingWorkspaces[0].name);
+  const ws = onboardingWorkspaces.find((w) => w.name === selected) || onboardingWorkspaces[0];
+  const { responsibilities, manager, deadlines, tasks, quickActions, updates } = ws;
+
   return (
     <div className="page">
       {/* Hero */}
@@ -54,63 +29,79 @@ export default function Onboarding() {
           {chips.map(([k, v]) => (
             <div key={k} className="onb-chip"><span className="faint">{k}</span><b>{v}</b></div>
           ))}
-          <Link to="/hub" className="onb-chip link">See highlights <span style={{ width: 13, height: 13 }}><IconArrow /></span></Link>
+          <Link to="/figma" className="onb-chip link"><span style={{ width: 14, height: 14 }}><IconFigma /></span> Figma Linked</Link>
         </div>
       </div>
 
-      {/* Row 1: projects tree + responsibilities */}
-      <div className="grid mb24" style={{ gridTemplateColumns: "320px 1fr" }}>
-        <div className="card">
+      {/* Row 1: projects tree + responsibilities — unified inside one background card */}
+      <div className="card onb-unify mb24">
+        <div className="onb-panel">
           <div className="section-title">Projects Relevant To You</div>
           <div className="tree">
-            {tree.map((node) => (
-              <div key={node.name}>
-                <div className="tree-item">
-                  <span className="tree-caret">{node.open ? "▾" : "▸"}</span>
-                  <span style={{ width: 16, height: 16, color: "var(--accent)" }}><IconProject /></span>
-                  <span style={{ fontWeight: 600, fontSize: 14 }}>{node.name}</span>
+            {onboardingWorkspaces.map((node) => {
+              const open = node.name === selected;
+              return (
+                <div key={node.name}>
+                  <button
+                    type="button"
+                    className={"tree-item" + (open ? " active" : "")}
+                    onClick={() => setSelected(node.name)}
+                  >
+                    <span className="tree-caret">{open ? "▾" : "▸"}</span>
+                    <span style={{ width: 16, height: 16, color: "var(--accent)" }}><IconProject /></span>
+                    <span style={{ fontWeight: 600, fontSize: 14 }}>{node.name}</span>
+                  </button>
+                  {open && node.children.map((c) => (
+                    <div key={c} className="tree-sub">{c}</div>
+                  ))}
                 </div>
-                {node.open && node.children.map((c) => (
-                  <div key={c} className="tree-sub">{c}</div>
-                ))}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        <div className="card">
-          <div className="row between mb16" style={{ alignItems: "center" }}>
-            <div className="section-title" style={{ margin: 0 }}>Fee &amp; Project Responsibilities</div>
-            <div className="row gap8">
-              <span className="chip" style={{ padding: "6px 12px", fontSize: 12 }}>Global view</span>
-              <span className="chip active" style={{ padding: "6px 12px", fontSize: 12 }}>By project</span>
-            </div>
+        <div className="onb-panel">
+          <div className="mb16">
+            <div className="section-title" style={{ margin: 0 }}>Detailed Project Responsibilities</div>
+            <div className="faint" style={{ fontSize: 12, marginTop: 2 }}>Dynamic for the selected project</div>
           </div>
+
+          <div className="resp-folder">
+            <span className="tree-caret">▾</span>
+            <span style={{ width: 16, height: 16, color: "var(--accent)" }}><IconProject /></span>
+            <span style={{ fontWeight: 700, fontSize: 14 }}>{ws.name}</span>
+          </div>
+
           <div className="resp-table">
             <div className="resp-head">
               <div>Sub-area</div><div>Category Owner</div><div>Design Manager / PM</div>
             </div>
-            {responsibilities.map((r) => (
-              <div key={r.area} className="resp-row">
-                <div className="row gap10">
-                  <div className="avatar" style={{ width: 30, height: 30, background: r.color, fontSize: 11 }}>
-                    {r.owner.split(" ").map((n) => n[0]).join("")}
+            {responsibilities.map((r) => {
+              const isManager = r.area === "Manager";
+              return (
+                <div key={r.area} className="resp-row">
+                  <div className="row gap10">
+                    <div className="avatar" style={{ width: 30, height: 30, background: r.color, fontSize: 11 }}>
+                      {initials(r.owner)}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: 13.5 }}>{r.area}</div>
+                      <div className="faint" style={{ fontSize: 12 }}>{r.owner}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: 13.5 }}>{r.area}</div>
-                    <div className="faint" style={{ fontSize: 12 }}>{r.owner}</div>
+                  <div><span className="badge badge-gray">{r.cat}</span></div>
+                  <div className="muted" style={{ fontSize: 13.5 }}>
+                    {isManager ? manager.role : `PM: ${manager.name}`}
                   </div>
                 </div>
-                <div><span className="badge badge-gray">{r.cat}</span></div>
-                <div className="muted" style={{ fontSize: 13.5 }}>{r.pm}</div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Row 2: active project workspace */}
-      <div className="section-title">Your Active Project Workspace — Fee Management</div>
+      <div className="section-title">Your Active Project Workspace — {ws.name}</div>
       <div className="work-grid">
         {/* Key deadlines */}
         <div className="card">

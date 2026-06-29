@@ -34,3 +34,4 @@ export const IconGauge = wrap(<><path d="M4 14a8 8 0 1 1 16 0" /><path d="M12 14
 export const IconBolt = wrap(<><path d="M13 2 4 14h7l-1 8 9-12h-7z" /></>);
 export const IconClose = wrap(<><path d="M6 6l12 12M18 6 6 18" /></>);
 export const IconStar = wrap(<><path d="m12 3 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 18.6 6.8 19.2l1-5.8L3.5 9.2l5.9-.9z" /></>);
+export const IconFilter = wrap(<><path d="M3 5h18l-7 8v6l-4-2v-4z" /></>);

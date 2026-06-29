@@ -1,32 +1,27 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { projects, statusBadge } from "../data";
-import { IconSearch, IconStar, IconArrow } from "../components/Icons";
+import { projects, statusBadge, projectTeams, filterAndSortProjects, emptyProjectFilter } from "../data";
+import { IconStar, IconArrow } from "../components/Icons";
+import SearchBar from "../components/SearchBar";
 
-const filters = ["All", "Finance", "Microscopy", "Photography", "Medical", "Research", "Active", "Completed", "In Preparation", "Favorites"];
+const categories = ["All", "Finance", "Microscopy", "Photography", "Medical", "Research", "Active", "Completed", "In Preparation", "Favorites"];
 
-// avatar stacks per project (initials + colors)
-const teams = {
-  "fee-management": [["SL", "#007AFF"], ["AK", "#AF52DE"], ["KM", "#FF9500"]],
-  "microscope-config": [["MV", "#FF9500"], ["DC", "#34C759"]],
-  "photo-asset": [["LO", "#AF52DE"], ["PS", "#e056c8"], ["AK", "#007AFF"]],
-  "patient-portal": [["AO", "#34C759"], ["GS", "#007AFF"]],
-};
+function matchesCategory(p, c) {
+  if (c === "All") return true;
+  if (c === "Favorites") return p.favorite;
+  if (c === "Active") return p.status === "Active" || p.status === "In Development";
+  if (c === "In Preparation") return p.status === "In Development";
+  if (c === "Completed") return p.status === "Released";
+  if (c === "Research") return p.status === "Research";
+  return p.department === c;
+}
 
 export default function KnowledgeHub() {
-  const [active, setActive] = useState("All");
-  const [q, setQ] = useState("");
+  const [category, setCategory] = useState("All");
+  const [filter, setFilter] = useState({ ...emptyProjectFilter });
+  const [openTeam, setOpenTeam] = useState(null); // project id whose contributor popover is open
 
-  const filtered = projects.filter((p) => {
-    if (q && !p.name.toLowerCase().includes(q.toLowerCase())) return false;
-    if (active === "All") return true;
-    if (active === "Favorites") return p.favorite;
-    if (active === "Active") return p.status === "Active" || p.status === "In Development";
-    if (active === "In Preparation") return p.status === "In Development";
-    if (active === "Completed") return p.status === "Released";
-    if (active === "Research") return p.status === "Research";
-    return p.department === active;
-  });
+  const filtered = filterAndSortProjects(projects, filter).filter((p) => matchesCategory(p, category));
 
   return (
     <div className="page">
@@ -35,20 +30,23 @@ export default function KnowledgeHub() {
         <p>Browse every project's captured decisions, research, and metrics.</p>
       </div>
 
-      <div className="topbar-search" style={{ maxWidth: "100%" }}>
-        <span style={{ width: 16, height: 16, color: "var(--text-faint)" }}><IconSearch /></span>
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search projects, decisions, studies…" />
-      </div>
+      <SearchBar
+        value={filter}
+        onChange={setFilter}
+        placeholder="Search projects, decisions, studies…"
+        variant="page"
+      />
 
       <div className="hub-filters">
-        {filters.map((f) => (
-          <button key={f} className={"chip" + (active === f ? " active" : "")} onClick={() => setActive(f)}>{f}</button>
+        {categories.map((c) => (
+          <button key={c} className={"chip" + (category === c ? " active" : "")} onClick={() => setCategory(c)}>{c}</button>
         ))}
       </div>
 
       <div className="khub-grid">
         {filtered.map((p) => {
           const label = p.status === "In Development" ? "In Preparation" : p.status;
+          const team = projectTeams[p.id] || [];
           return (
             <Link key={p.id} to={`/projects/${p.id}`} className="card card-hover khub-card">
               <div className="khub-top">
@@ -67,21 +65,52 @@ export default function KnowledgeHub() {
 
               <p className="khub-desc">{p.summary}</p>
 
-              <div className="avatar-stack">
-                {(teams[p.id] || []).map(([ini, c], i) => (
-                  <span key={i} className="stack-av" style={{ background: c, zIndex: 10 - i }}>{ini}</span>
-                ))}
+              <div className="avatar-stack-wrap">
+                <button
+                  type="button"
+                  className="avatar-stack"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setOpenTeam(openTeam === p.id ? null : p.id); }}
+                  aria-label="Show contributors"
+                >
+                  {team.map((m, i) => (
+                    <span key={i} className="stack-av" style={{ background: m.color, zIndex: 10 - i }}>
+                      {m.ini}
+                      <span className="av-tip">{m.name}</span>
+                    </span>
+                  ))}
+                </button>
+                {openTeam === p.id && (
+                  <div
+                    className="team-pop"
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                  >
+                    <div className="team-pop-title">Contributors</div>
+                    {team.map((m, i) => (
+                      <div key={i} className="team-pop-row">
+                        <span className="stack-av" style={{ background: m.color, margin: 0 }}>{m.ini}</span>
+                        <div>
+                          <div className="team-pop-name">{m.name}</div>
+                          <div className="team-pop-role">{m.role}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="khub-foot">
-                <span className="faint" style={{ fontSize: 12 }}>
-                  Created by <b style={{ color: "var(--text-dim)" }}>Design system team</b> · {p.updated}
+                <span className="khub-created">
+                  Created By <b>{p.team || "Design system team"}</b> | {p.created}
                 </span>
                 <span className="khub-link">Project {p.department} <span style={{ width: 14, height: 14 }}><IconArrow /></span></span>
               </div>
             </Link>
           );
         })}
+
+        {filtered.length === 0 && (
+          <div className="khub-noresults">No projects match your search and filters.</div>
+        )}
       </div>
     </div>
   );

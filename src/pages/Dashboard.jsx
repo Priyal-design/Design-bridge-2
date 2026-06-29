@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { kpis, knowledgeGaps, activity, coverageChart, projects, statusBadge } from "../data";
-import { IconChat, IconHub, IconArrow } from "../components/Icons";
+import { IconHub, IconArrow, IconAdd, IconStar } from "../components/Icons";
 
 function Gauge({ value }) {
   const r = 84, c = 2 * Math.PI * r;
@@ -30,8 +30,8 @@ function Gauge({ value }) {
 }
 
 const quickActions = [
-  { label: "Explore Projects", to: "/hub", icon: IconHub, color: "#007AFF" },
-  { label: "Ask Knowledge", to: "/chat", icon: IconChat, color: "#AF52DE" },
+  { label: "Explore Projects", to: "/hub", icon: IconHub, color: "#007AFF", desc: "Browse every captured project" },
+  { label: "Add Knowledge", to: "/add", icon: IconAdd, color: "#AF52DE", desc: "Capture a new decision, study or metric" },
 ];
 
 export default function Dashboard() {
@@ -92,7 +92,7 @@ export default function Dashboard() {
               <div className="activity-ic" style={{ background: `${a.color}22`, color: a.color }}>{a.icon}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14 }}><strong>{a.who}</strong> {a.action}</div>
-                <div className="faint" style={{ fontSize: 12.5, marginTop: 2 }}>{a.time}</div>
+                <div className="faint" style={{ fontSize: 12.5, marginTop: 2 }}>{a.time}{a.dept ? ` | ${a.dept}` : ""}</div>
               </div>
             </div>
           ))}
@@ -114,26 +114,30 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Recent projects */}
+      {/* Favourites */}
       <div className="card mb24">
         <div className="row between mb16" style={{ alignItems: "center" }}>
-          <div className="section-title" style={{ margin: 0 }}>Recent Projects</div>
+          <div className="section-title" style={{ margin: 0 }}>Favourites</div>
           <Link to="/hub" className="khub-link">View all <span style={{ width: 14, height: 14 }}><IconArrow /></span></Link>
         </div>
         <div className="dash-proj-grid">
-          {projects.slice(0, 3).map((p) => {
+          {projects.filter((p) => p.favorite).slice(0, 3).map((p) => {
             const label = p.status === "In Development" ? "In Preparation" : p.status;
             return (
               <Link key={p.id} to={`/projects/${p.id}`} className="dash-proj card-hover">
-                <div className="row between" style={{ alignItems: "flex-start", gap: 8 }}>
-                  <div style={{ fontWeight: 700, fontSize: 14.5, letterSpacing: "-0.3px" }}>{p.name}</div>
-                  <span className={"badge " + statusBadge[p.status]} style={{ flex: "none" }}>{label}</span>
+                <div className="dash-proj-head">
+                  <span className="dash-proj-star"><IconStar fill="currentColor" stroke="none" /></span>
+                  <span className="dash-proj-name">{p.name}</span>
                 </div>
+                <span className={"badge " + statusBadge[p.status]} style={{ alignSelf: "flex-start", marginTop: 10 }}>{label}</span>
                 <div className="dash-proj-stats">
                   <div><div className="kl">Decisions</div><div className="kv">{p.decisions}</div></div>
                   <div><div className="kl">Research</div><div className="kv">{p.research}</div></div>
-                  <div><div className="kl">A11y</div><div className="kv">{p.accessibility}</div></div>
+                  <div><div className="kl">Accessibility</div><div className="kv">{p.accessibility} <span className="faint" style={{ fontSize: 11, fontWeight: 500 }}>score</span></div></div>
                 </div>
+                {p.team && (
+                  <div className="dash-proj-created">Created By <strong>{p.team}</strong> | {p.created}</div>
+                )}
                 <span className="khub-link" style={{ marginTop: 14 }}>Project {p.department} <span style={{ width: 14, height: 14 }}><IconArrow /></span></span>
               </Link>
             );
@@ -150,9 +154,7 @@ export default function Dashboard() {
             </span>
             <div>
               <div style={{ fontSize: 15 }}>{q.label}</div>
-              <div className="faint" style={{ fontSize: 12.5, fontWeight: 500 }}>
-                {q.label === "Explore Projects" ? "Browse every captured project" : "Ask anything about your design knowledge"}
-              </div>
+              <div className="faint" style={{ fontSize: 12.5, fontWeight: 500 }}>{q.desc}</div>
             </div>
           </Link>
         ))}

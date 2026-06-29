@@ -1,13 +1,224 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { guidelines } from "../data";
+import { chatThread, knowledgeTypes } from "../data";
 import { IconClose, IconSparkle, IconArrow, IconCheck } from "../components/Icons";
-import Wordmark from "../components/Wordmark";
+import MagicWand from "../components/MagicWand";
+
+const suggestedTags = ["cta", "accessibility", "conversion", "above-the-fold", "checkout", "usability"];
+const addSteps = ["Choose", "Details", "Publish"];
+
+// Small confidence ring — matches the Ask Design Bridge chat answer.
+function ConfRing({ value, size = 44 }) {
+  const r = size / 2 - 4, c = 2 * Math.PI * r;
+  const off = c - (value / 100) * c;
+  return (
+    <div className="conf-ring" style={{ width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: "rotate(-90deg)" }}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--panel-3)" strokeWidth="4" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--green)" strokeWidth="4"
+          strokeLinecap="round" strokeDasharray={c} strokeDashoffset={off} />
+      </svg>
+      <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", fontSize: 10.5, fontWeight: 800 }}>
+        {value}%
+      </div>
+    </div>
+  );
+}
+
+// ----- Ask a Question tab — same chatbot style as Ask Design Bridge -----
+function PluginAsk() {
+  const [thinking, setThinking] = useState(false);
+  const [answered, setAnswered] = useState(true);
+  const [input, setInput] = useState("");
+
+  const ask = () => {
+    setThinking(true);
+    setAnswered(false);
+    setInput("");
+    setTimeout(() => { setThinking(false); setAnswered(true); }, 1200);
+  };
+
+  return (
+    <>
+      <div className="ai-bubble user mb12">{chatThread.question}</div>
+
+      {thinking && (
+        <div className="ai-bubble mb12"><span className="muted">Searching evidence and design memory…</span></div>
+      )}
+
+      {answered && (
+        <div className="ai-result-card">
+          <div className="row between mb12" style={{ alignItems: "center" }}>
+            <div className="row gap8" style={{ alignItems: "center" }}>
+              <MagicWand size={30} />
+              <strong style={{ fontSize: 14 }}>Design Bridge</strong>
+            </div>
+            <ConfRing value={chatThread.confidence} />
+          </div>
+
+          <div className="badge badge-violet mb8">Decision · Design Decision Insights</div>
+          <p style={{ fontSize: 13.5, lineHeight: 1.6, marginBottom: 12 }}>{chatThread.answer[0]}</p>
+
+          <div className="faint" style={{ fontSize: 11.5, marginBottom: 6 }}>Metrics</div>
+          <div className="row gap10 mb12 wrap">
+            {chatThread.metrics.map((m) => (
+              <div key={m.label} className="metric-panel" style={{ padding: "10px 12px" }}>
+                <div className="faint" style={{ fontSize: 11 }}>{m.label}</div>
+                <div className="metric-arrow mt4">
+                  <span className="metric-from" style={{ fontSize: 13 }}>{m.from}</span>
+                  <span className="arrow" style={{ width: 13, height: 13 }}><IconArrow /></span>
+                  <span className="metric-to" style={{ fontSize: 16 }}>{m.to}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="faint" style={{ fontSize: 11.5, marginBottom: 6 }}>Evidence found</div>
+          <div className="row gap8 wrap">
+            {chatThread.evidence.map((e) => (
+              <span key={e.title} className="tag">{e.icon} {e.title}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="ai-input mt16">
+        <input value={input} onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && ask()}
+          placeholder="Ask about the selection…" />
+        <button className="btn btn-primary btn-sm" onClick={ask}>
+          <span style={{ width: 14, height: 14 }}><IconSparkle /></span>
+        </button>
+      </div>
+
+      <div className="mt16">
+        <div className="faint" style={{ fontSize: 11.5, marginBottom: 8 }}>Related questions</div>
+        <div className="col gap8">
+          {chatThread.related.map((q) => (
+            <div key={q} className="related-q" style={{ fontSize: 12.5, padding: "9px 12px" }} onClick={ask}>
+              <span className="faint">↳</span> {q}
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ----- Add Knowledge tab — same multi-step process as the /add page -----
+function PluginAdd() {
+  const [step, setStep] = useState(0);
+  const [type, setType] = useState("decision");
+  const [tags, setTags] = useState(["cta", "accessibility"]);
+
+  const toggleTag = (t) => setTags((p) => (p.includes(t) ? p.filter((x) => x !== t) : [...p, t]));
+
+  return (
+    <div>
+      {/* Step rail */}
+      <div className="steps-rail" style={{ marginBottom: 20 }}>
+        {addSteps.map((s, i) => (
+          <div key={s} className="step-pill" style={{ flex: i < addSteps.length - 1 ? 1 : "none" }}>
+            <div className={"step-circle " + (i < step ? "done" : i === step ? "active" : "")} style={{ width: 28, height: 28, fontSize: 12 }}>
+              {i < step ? <span style={{ width: 14, height: 14 }}><IconCheck /></span> : i + 1}
+            </div>
+            <span className="step-label" style={{ fontSize: 12, color: i === step ? "var(--text)" : "var(--text-faint)" }}>{s}</span>
+            {i < addSteps.length - 1 && <div className="step-conn" style={{ minWidth: 16 }} />}
+          </div>
+        ))}
+      </div>
+
+      {/* Step 1 — Choose */}
+      {step === 0 && (
+        <>
+          <div className="faint mb12" style={{ fontSize: 12.5 }}>What are you capturing?</div>
+          <div className="type-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+            {knowledgeTypes.map((t) => (
+              <div key={t.key} className={"type-card" + (type === t.key ? " sel" : "")} style={{ padding: "14px 12px" }} onClick={() => setType(t.key)}>
+                <div className="type-ic" style={{ width: 36, height: 36, fontSize: 18, marginBottom: 8 }}>{t.icon}</div>
+                <div style={{ fontWeight: 700, fontSize: 13 }}>{t.label}</div>
+                <div className="type-desc" style={{ fontSize: 11, marginTop: 2 }}>{t.desc}</div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Step 2 — Details */}
+      {step === 1 && (
+        <>
+          <div className="field"><label>Title</label><input placeholder="e.g. Move CTA above the fold" defaultValue="Move CTA Above Fold" /></div>
+          <div className="field"><label>Description</label><textarea rows="3" placeholder="Describe the knowledge…" defaultValue="Users overlooked the payment action in the prior layout." /></div>
+          <div className="field-row">
+            <div className="field"><label>Department</label>
+              <select defaultValue="Finance"><option>Finance</option><option>Microscopy</option><option>Photography</option><option>Medical</option></select>
+            </div>
+            <div className="field"><label>Category</label>
+              <select defaultValue="Decision"><option>Decision</option><option>Research</option><option>Guideline</option><option>Metric</option></select>
+            </div>
+          </div>
+          <div className="field" style={{ marginBottom: 0 }}><label>Tags</label>
+            <div className="tag-input-box">
+              {tags.length === 0 && <span className="tag-empty">No tags yet — pick from suggestions below.</span>}
+              {tags.map((t) => (
+                <span key={t} className="tag-chip">#{t}
+                  <button type="button" className="tag-chip-x" aria-label={`Remove ${t}`} onClick={() => toggleTag(t)}>
+                    <span style={{ width: 12, height: 12, display: "grid" }}><IconClose /></span>
+                  </button>
+                </span>
+              ))}
+            </div>
+            <div className="gen-tags">
+              <div className="gen-tags-head">
+                <span className="gen-tags-ic"><IconSparkle /></span>
+                <div>
+                  <div className="gen-tags-title">Generate tags</div>
+                  <div className="gen-tags-sub">Create tags as per the information given</div>
+                </div>
+              </div>
+              <div className="gen-tags-pills">
+                {suggestedTags.map((t) => {
+                  const on = tags.includes(t);
+                  return (
+                    <button type="button" key={t} className={"suggest-pill" + (on ? " on" : "")} onClick={() => toggleTag(t)}>
+                      <span className="sp-ic">{on ? <IconCheck /> : <span className="sp-plus">+</span>}</span>{t}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Step 3 — Published */}
+      {step === 2 && (
+        <div style={{ textAlign: "center", padding: "10px 0" }}>
+          <div className="pub-check"><span style={{ width: 26, height: 26 }}><IconCheck /></span></div>
+          <h3 style={{ fontSize: 18, marginTop: 12 }}>Knowledge published!</h3>
+          <p className="muted mt8" style={{ fontSize: 13 }}>It now appears across the Knowledge Hub, graph, and AI search.</p>
+          <div className="row gap8 mt20" style={{ justifyContent: "center" }}>
+            <button className="btn btn-ghost btn-sm" onClick={() => setStep(1)}>← Go Back</button>
+            <Link to="/hub" className="btn btn-primary btn-sm">View in Hub</Link>
+          </div>
+        </div>
+      )}
+
+      {/* Nav */}
+      {step < 2 && (
+        <div className="row between mt20" style={{ justifyContent: step === 0 ? "flex-end" : "space-between" }}>
+          {step > 0 && <button className="btn btn-ghost btn-sm" onClick={() => setStep((s) => s - 1)}>← Back</button>}
+          <button className="btn btn-primary btn-sm" onClick={() => setStep((s) => s + 1)}>
+            {step === 1 ? "Publish" : "Continue"} <span style={{ width: 14, height: 14 }}><IconArrow /></span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function FigmaPlugin() {
-  const [tab, setTab] = useState("ask");      // ask | add
-  const [example, setExample] = useState(1);  // 1 = CTA decision, 2 = guidelines
-  const [showCard, setShowCard] = useState(true);
+  const [tab, setTab] = useState("ask"); // ask | add
 
   return (
     <div className="figma-stage">
@@ -25,7 +236,6 @@ export default function FigmaPlugin() {
             <span className="faint" style={{ marginLeft: 10, fontSize: 12 }}>Fee Management — Checkout.fig</span>
           </div>
 
-          {/* mock UI inside */}
           <div style={{ padding: 30 }}>
             <div style={{ height: 14, width: "55%", background: "var(--panel-3)", borderRadius: 5, marginBottom: 24 }} />
             <div className="card" style={{ padding: 16, marginBottom: 16 }}>
@@ -33,7 +243,6 @@ export default function FigmaPlugin() {
               <div style={{ height: 10, width: "70%", background: "var(--panel-3)", borderRadius: 4 }} />
             </div>
 
-            {/* selected CTA */}
             <div style={{ position: "relative", marginTop: 30 }}>
               <button className="btn btn-primary" style={{ width: "100%" }}>Pay Now — $1,240.00</button>
               <div className="selection-frame" style={{ inset: -8 }}>
@@ -52,114 +261,24 @@ export default function FigmaPlugin() {
           </div>
         </div>
 
-        {/* Plugin panel — 380px */}
-        <div className="plugin-panel" style={{ width: 380 }}>
-          <div className="plugin-head">
-            <div style={{ flex: 1 }}>
-              <Wordmark size={15} />
-              <div className="faint" style={{ fontSize: 11, marginTop: 3 }}>1 frame selected · Primary CTA</div>
+        {/* Plugin panel */}
+        <div className="plugin-panel" style={{ width: 420 }}>
+          <div className="plugin-head plugin-head-col">
+            <div className="row between" style={{ width: "100%", alignItems: "center" }}>
+              <div className="plugin-brand">
+                <span className="plugin-logo">D</span>
+                <strong style={{ fontSize: 14 }}>Design Bridge</strong>
+              </div>
+              <button className="del-btn" style={{ position: "static" }}><span style={{ width: 14, height: 14 }}><IconClose /></span></button>
             </div>
-            <button className="del-btn" style={{ position: "static" }}><span style={{ width: 14, height: 14 }}><IconClose /></span></button>
+            <div className="plugin-tabbar">
+              <button className={tab === "ask" ? "active" : ""} onClick={() => setTab("ask")}>Ask a Question</button>
+              <button className={tab === "add" ? "active" : ""} onClick={() => setTab("add")}>Add Knowledge</button>
+            </div>
           </div>
 
           <div className="plugin-body">
-            <div className="faint mb12" style={{ fontSize: 12.5 }}>What would you like to do?</div>
-            <div className="plugin-tabs mb16">
-              <button className={"plugin-tab" + (tab === "ask" ? " active" : "")} onClick={() => setTab("ask")}>Ask a Question</button>
-              <button className={"plugin-tab" + (tab === "add" ? " active" : "")} onClick={() => setTab("add")}>Add Knowledge</button>
-            </div>
-
-            {tab === "ask" && (
-              <>
-                {/* example switch */}
-                <div className="row gap8 mb16">
-                  <button className={"chip" + (example === 1 ? " active" : "")} style={{ fontSize: 11.5, padding: "5px 10px" }} onClick={() => { setExample(1); setShowCard(true); }}>Ex 1 · Why above fold?</button>
-                  <button className={"chip" + (example === 2 ? " active" : "")} style={{ fontSize: 11.5, padding: "5px 10px" }} onClick={() => setExample(2)}>Ex 2 · Guidelines</button>
-                </div>
-
-                {/* Example 1 */}
-                {example === 1 && (
-                  <>
-                    <div className="ai-bubble user mb12">Why is the CTA above the fold?</div>
-                    {showCard && (
-                      <div className="ai-result-card">
-                        <button className="del-btn" onClick={() => setShowCard(false)}><span style={{ width: 13, height: 13 }}><IconClose /></span></button>
-                        <div className="badge badge-violet mb8">Decision</div>
-                        <div style={{ fontWeight: 700, fontSize: 15 }}>Move CTA Above Fold</div>
-                        <div className="row gap8 mt8 mb12" style={{ alignItems: "center" }}>
-                          <span className="badge badge-green"><span className="dot" style={{ background: "var(--green)" }} />94% confidence</span>
-                        </div>
-                        <div className="faint" style={{ fontSize: 11.5 }}>Reason</div>
-                        <p style={{ fontSize: 13.5, marginBottom: 12 }}>Users missed the CTA during testing.</p>
-                        <div className="faint" style={{ fontSize: 11.5 }}>Metrics</div>
-                        <div className="metric-arrow mt8 mb12">
-                          <span className="metric-from" style={{ fontSize: 14 }}>62%</span>
-                          <span className="arrow" style={{ width: 14, height: 14 }}><IconArrow /></span>
-                          <span className="metric-to" style={{ fontSize: 18 }}>89%</span>
-                          <span className="faint" style={{ fontSize: 11 }}>Task success</span>
-                        </div>
-                        <div className="faint" style={{ fontSize: 11.5, marginBottom: 6 }}>Evidence</div>
-                        <div className="row gap8 wrap">
-                          <span className="tag">🔬 Research Study #11</span>
-                          <span className="tag">📊 Heatmaps</span>
-                          <span className="tag">♿ Accessibility Audit</span>
-                        </div>
-                      </div>
-                    )}
-                    {!showCard && (
-                      <button className="btn btn-ghost btn-sm" style={{ width: "100%" }} onClick={() => setShowCard(true)}>Card dismissed — restore</button>
-                    )}
-                  </>
-                )}
-
-                {/* Example 2 */}
-                {example === 2 && (
-                  <>
-                    <div className="ai-bubble user mb12">What CTA guidelines should I follow?</div>
-                    <div className="ai-result-card">
-                      <div className="row between mb12" style={{ alignItems: "center" }}>
-                        <strong style={{ fontSize: 14.5 }}>{guidelines.title}</strong>
-                        <span className="badge badge-green" style={{ fontSize: 11 }}>{guidelines.confidence}%</span>
-                      </div>
-                      <div className="col gap8">
-                        {guidelines.rules.map((r) => (
-                          <div key={r} className="row gap8" style={{ alignItems: "flex-start" }}>
-                            <span style={{ width: 15, height: 15, color: "var(--green)", flex: "none", marginTop: 2 }}><IconCheck /></span>
-                            <span style={{ fontSize: 13.5 }}>{r}</span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="faint mt16" style={{ fontSize: 11.5, marginBottom: 6 }}>Based on</div>
-                      <div className="row gap8 wrap">
-                        {guidelines.based.map((b) => <span key={b} className="tag">{b}</span>)}
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                <div className="ai-input mt16">
-                  <input placeholder="Ask about the selection…" />
-                  <button className="btn btn-primary btn-sm"><span style={{ width: 14, height: 14 }}><IconSparkle /></span></button>
-                </div>
-              </>
-            )}
-
-            {tab === "add" && (
-              <div className="col gap0">
-                <div className="faint mb12" style={{ fontSize: 12.5 }}>Add Knowledge Flow</div>
-                {["Title", "Problem", "Evidence", "Metrics", "Alternatives", "Outcome"].map((f) => (
-                  <div key={f} className="field" style={{ marginBottom: 12 }}>
-                    <label>{f}</label>
-                    {f === "Problem" || f === "Outcome"
-                      ? <textarea rows="2" placeholder={`Enter ${f.toLowerCase()}…`} />
-                      : <input placeholder={`Enter ${f.toLowerCase()}…`} />}
-                  </div>
-                ))}
-                <button className="btn btn-primary" style={{ width: "100%", marginTop: 4 }}>
-                  Submit to Design Bridge <span style={{ width: 16, height: 16 }}><IconArrow /></span>
-                </button>
-              </div>
-            )}
+            {tab === "ask" ? <PluginAsk /> : <PluginAdd />}
           </div>
         </div>
       </div>
