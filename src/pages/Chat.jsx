@@ -188,7 +188,7 @@ export default function Chat() {
             <div className="ai-input" style={{ padding: "8px 8px 8px 16px" }}>
               <input value={input} onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && ask()}
-                placeholder="Ask Design Bridge anything…" />
+                placeholder="Ask Jedi Bot anything…" />
               <button className="btn btn-primary btn-sm" onClick={ask}>
                 Send <span style={{ width: 14, height: 14 }}><IconArrow /></span>
               </button>
