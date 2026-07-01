@@ -21,9 +21,9 @@ export default function Onboarding() {
       {/* Hero */}
       <div className="onb-hero mb24">
         <div className="badge badge-blue mb12">Onboarding</div>
-        <h2 style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-0.8px" }}>Welcome, Priyal 🚀</h2>
+        <h2 style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-0.8px" }}>Welcome, Priyal</h2>
         <p className="muted mt12" style={{ fontSize: 15.5, maxWidth: 600 }}>
-          Get up to speed on the projects that matter to you — everything the team knows, in one place.
+          Everything your team knows about your projects all in one place
         </p>
         <div className="onb-chips mt20">
           {chips.map(([k, v]) => (

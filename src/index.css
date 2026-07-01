@@ -74,6 +74,7 @@
   --ink-grad: linear-gradient(180deg, #1f2733 0%, #0f172a 100%);
   --shadow-ink: 0 14px 30px rgba(15, 23, 42, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.14);
   --shadow-ink-hover: 0 20px 42px rgba(15, 23, 42, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  --ink-text: #fff;
 
   /* Legacy aliases — kept so any stray reference still looks right */
   --shadow-pink: var(--shadow);
@@ -136,6 +137,11 @@
     --accent-hover: #409cff;
     --accent-2: #409cff;
 
+    --ink-grad: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+    --shadow-ink: 0 14px 30px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    --shadow-ink-hover: 0 20px 42px rgba(0, 0, 0, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    --ink-text: #0f172a;
+
     --shadow:        0 24px 70px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.10);
     --shadow-strong: 0 32px 90px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.14);
     --shadow-subtle: 0 14px 40px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.08);
@@ -147,6 +153,8 @@
     --orb-2: rgba(191, 90, 242, 0.20);
     --orb-3: rgba(48, 209, 88, 0.12);
   }
+
+
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -156,6 +164,7 @@ html, body, #root { height: 100%; }
 body {
   font-family: var(--font);
   background: var(--page-grad);
+  background-attachment: fixed;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -411,7 +420,7 @@ input, textarea, select { font-family: inherit; }
 }
 .btn-primary {
   background: var(--ink-grad);
-  color: #fff;
+  color: var(--ink-text);
   box-shadow: var(--shadow-ink);
 }
 .btn-primary:hover { transform: translateY(-2px) scale(1.01); box-shadow: var(--shadow-ink-hover); }

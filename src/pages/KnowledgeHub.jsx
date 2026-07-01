@@ -1,27 +1,49 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { projects, statusBadge, projectTeams, filterAndSortProjects, emptyProjectFilter } from "../data";
 import { IconStar, IconArrow } from "../components/Icons";
 import SearchBar from "../components/SearchBar";
 
-const categories = ["All", "Finance", "Microscopy", "Photography", "Medical", "Research", "Active", "Completed", "In Preparation", "Favorites"];
+const categories = ["All", "Finance", "Microscopy", "Photography", "Medical", "Favorites"];
 
 function matchesCategory(p, c) {
   if (c === "All") return true;
   if (c === "Favorites") return p.favorite;
-  if (c === "Active") return p.status === "Active" || p.status === "In Development";
-  if (c === "In Preparation") return p.status === "In Development";
-  if (c === "Completed") return p.status === "Released";
-  if (c === "Research") return p.status === "Research";
   return p.department === c;
 }
 
 export default function KnowledgeHub() {
   const [category, setCategory] = useState("All");
   const [filter, setFilter] = useState({ ...emptyProjectFilter });
-  const [openTeam, setOpenTeam] = useState(null); // project id whose contributor popover is open
+  const [openTeam, setOpenTeam] = useState(null);
+  const [favorites, setFavorites] = useState(() => new Set(projects.filter((p) => p.favorite).map((p) => p.id)));
+  const [tagTip, setTagTip] = useState(null);
+  const tipRef = useRef(null);
 
-  const filtered = filterAndSortProjects(projects, filter).filter((p) => matchesCategory(p, category));
+  const showTagTip = useCallback((e, text) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    setTagTip({
+      text,
+      style: {
+        position: "fixed",
+        left: r.left + r.width / 2,
+        top: r.top - 8,
+        transform: "translate(-50%, -100%)",
+      },
+    });
+  }, []);
+
+  const toggleFavorite = (id) => {
+    setFavorites((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const displayed = projects.map((p) => ({ ...p, favorite: favorites.has(p.id) }));
+  const filtered = filterAndSortProjects(displayed, filter).filter((p) => matchesCategory(p, category));
 
   return (
     <div className="page">
@@ -51,7 +73,15 @@ export default function KnowledgeHub() {
             <Link key={p.id} to={`/projects/${p.id}`} className="card card-hover khub-card">
               <div className="khub-top">
                 <div className="khub-title">
-                  <span className={"star" + (p.favorite ? " on" : "")} style={{ width: 18, height: 18 }}><IconStar /></span>
+                  <button
+                    type="button"
+                    className={"star" + (p.favorite ? " on" : "")}
+                    style={{ width: 22, height: 22, background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleFavorite(p.id); }}
+                    aria-label={p.favorite ? "Unfavorite" : "Favorite"}
+                  >
+                    <IconStar />
+                  </button>
                   {p.name}
                 </div>
                 <span className={"badge " + statusBadge[p.status]}>{label}</span>
@@ -64,6 +94,23 @@ export default function KnowledgeHub() {
               </div>
 
               <p className="khub-desc">{p.summary}</p>
+
+              {p.tags && p.tags.length > 0 && (
+                <div className="khub-tags">
+                  {p.tags.slice(0, 3).map((t) => (
+                    <span key={t} className="tag">{t}</span>
+                  ))}
+                  {p.tags.length > 3 && (
+                    <span
+                      className="tag tag-more"
+                      onMouseEnter={(e) => showTagTip(e, p.tags.slice(3).join(", "))}
+                      onMouseLeave={() => setTagTip(null)}
+                    >
+                      +{p.tags.length - 3}
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div className="avatar-stack-wrap">
                 <button
@@ -112,6 +159,14 @@ export default function KnowledgeHub() {
           <div className="khub-noresults">No projects match your search and filters.</div>
         )}
       </div>
+
+      {tagTip && createPortal(
+        <div className="tag-tip" style={tagTip.style} ref={tipRef}>
+          {tagTip.text}
+          <span className="tag-tip-arrow" />
+        </div>,
+        document.body
+      )}
     </div>
   );
 }

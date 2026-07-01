@@ -5,7 +5,7 @@ import {
   achievements, futureTasks, jira, statusBadge, departmentColors,
   figmaFiles, feedbackAnalysis, projectIssues, projectComments, usabilityVideos,
 } from "../data";
-import { IconSparkle, IconArrow, IconPlay } from "../components/Icons";
+import { IconArrow, IconPlay } from "../components/Icons";
 import MagicWand from "../components/MagicWand";
 
 // Donut chart for the Feedback Analysis card
@@ -77,7 +77,7 @@ export default function ProjectDetail() {
             </div>
           </div>
           <Link to="/chat" className="btn btn-primary">
-            <span style={{ width: 16, height: 16 }}><IconSparkle /></span> Ask about this project
+            <MagicWand size={36} /> Ask about this project
           </Link>
         </div>
         <p className="muted mt16" style={{ fontSize: 14.5, maxWidth: 760 }}>{project.summary}</p>
@@ -185,7 +185,7 @@ export default function ProjectDetail() {
           <div className="card">
             <div className="section-title">Figma File</div>
             {figmaFiles.map((f) => (
-              <div key={f.name} className="figma-file">
+              <a key={f.name} href={f.url} target="_blank" rel="noopener noreferrer" className="figma-file" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
                 <div className="row between" style={{ alignItems: "center", marginBottom: 12 }}>
                   <div style={{ fontSize: 16, fontWeight: 700 }}>{f.name}</div>
                   <span className={"badge " + f.badge}>{f.status}</span>
@@ -193,7 +193,7 @@ export default function ProjectDetail() {
                 {f.image
                   ? <img src={f.image} alt={f.name} className="figma-img" />
                   : <FigmaPreview frames={f.frames} tint={f.tint} />}
-              </div>
+              </a>
             ))}
           </div>
 

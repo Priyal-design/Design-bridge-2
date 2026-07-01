@@ -38,8 +38,8 @@ export default function Dashboard() {
   return (
     <div className="page">
       <div className="page-head">
-        <h2>Welcome back, Priyal 👋</h2>
-        <p>Here's the state of design knowledge across Jedi today.</p>
+        <h2>Welcome back, Priyal</h2>
+        <p>Here's the state of design knowledge across teams today.</p>
       </div>
 
       {/* KPI cards */}

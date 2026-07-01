@@ -90,12 +90,12 @@ export default function AddKnowledge() {
               <div className="tag-input-box">
                 {tags.length === 0 && <span className="tag-empty">No tags yet — pick from suggestions below.</span>}
                 {tags.map((t) => (
-                  <span key={t} className="tag-chip">
-                    #{t}
-                    <button type="button" className="tag-chip-x" aria-label={`Remove ${t}`} onClick={() => toggleTag(t)}>
-                      <span style={{ width: 12, height: 12, display: "grid" }}><IconClose /></span>
-                    </button>
-                  </span>
+                    <div key={t} className="tag-chip">
+                      {t}
+                      <button type="button" className="tag-chip-x" aria-label={`Remove ${t}`} onClick={() => toggleTag(t)}>
+                        <span style={{ width: 12, height: 12, display: "grid" }}><IconClose /></span>
+                      </button>
+                    </div>
                 ))}
               </div>
 
@@ -104,8 +104,8 @@ export default function AddKnowledge() {
                 <div className="gen-tags-head">
                   <span className="gen-tags-ic"><IconSparkle /></span>
                   <div>
-                    <div className="gen-tags-title">Generate tags</div>
-                    <div className="gen-tags-sub">Create tags for the project as per the information given</div>
+                    <div className="gen-tags-title">Generated tags</div>
+                    <div className="gen-tags-sub">Pick tags for the project</div>
                   </div>
                 </div>
                 <div className="gen-tags-pills">

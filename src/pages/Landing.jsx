@@ -19,7 +19,7 @@ export default function Landing() {
       <div className="landing-inner">
         <nav className="land-nav">
           <div className="brand" style={{ padding: 0 }}>
-            <Wordmark size={22} />
+            <Wordmark size={32} style={{ marginTop: 6 }} />
           </div>
           <div className="links">
             <a href="#features">Features</a>

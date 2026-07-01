@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { chatThread, knowledgeTypes } from "../data";
 import { IconClose, IconSparkle, IconArrow, IconCheck } from "../components/Icons";
 import MagicWand from "../components/MagicWand";
+import Lottie from "../components/Lottie";
+import published from "../assets/published.json";
+import Wordmark from "../components/Wordmark";
 
 const suggestedTags = ["cta", "accessibility", "conversion", "above-the-fold", "checkout", "usability"];
 const addSteps = ["Choose", "Details", "Publish"];
@@ -161,7 +164,7 @@ function PluginAdd() {
             <div className="tag-input-box">
               {tags.length === 0 && <span className="tag-empty">No tags yet — pick from suggestions below.</span>}
               {tags.map((t) => (
-                <span key={t} className="tag-chip">#{t}
+                <span key={t} className="tag-chip">{t}
                   <button type="button" className="tag-chip-x" aria-label={`Remove ${t}`} onClick={() => toggleTag(t)}>
                     <span style={{ width: 12, height: 12, display: "grid" }}><IconClose /></span>
                   </button>
@@ -172,8 +175,8 @@ function PluginAdd() {
               <div className="gen-tags-head">
                 <span className="gen-tags-ic"><IconSparkle /></span>
                 <div>
-                  <div className="gen-tags-title">Generate tags</div>
-                  <div className="gen-tags-sub">Create tags as per the information given</div>
+                  <div className="gen-tags-title">Generated tags</div>
+                  <div className="gen-tags-sub">Pick tags for the project</div>
                 </div>
               </div>
               <div className="gen-tags-pills">
@@ -194,8 +197,8 @@ function PluginAdd() {
       {/* Step 3 — Published */}
       {step === 2 && (
         <div style={{ textAlign: "center", padding: "10px 0" }}>
-          <div className="pub-check"><span style={{ width: 26, height: 26 }}><IconCheck /></span></div>
-          <h3 style={{ fontSize: 18, marginTop: 12 }}>Knowledge published!</h3>
+          <Lottie animationData={published} size={120} loop={false} style={{ margin: "0 auto" }} />
+          <h3 style={{ fontSize: 18, marginTop: 4 }}>Knowledge published!</h3>
           <p className="muted mt8" style={{ fontSize: 13 }}>It now appears across the Knowledge Hub, graph, and AI search.</p>
           <div className="row gap8 mt20" style={{ justifyContent: "center" }}>
             <button className="btn btn-ghost btn-sm" onClick={() => setStep(1)}>← Go Back</button>
@@ -266,8 +269,7 @@ export default function FigmaPlugin() {
           <div className="plugin-head plugin-head-col">
             <div className="row between" style={{ width: "100%", alignItems: "center" }}>
               <div className="plugin-brand">
-                <span className="plugin-logo">D</span>
-                <strong style={{ fontSize: 14 }}>Design Bridge</strong>
+                <Wordmark size={20} />
               </div>
               <button className="del-btn" style={{ position: "static" }}><span style={{ width: 14, height: 14 }}><IconClose /></span></button>
             </div>

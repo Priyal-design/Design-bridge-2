@@ -7,7 +7,7 @@ import logoDark from "../images/logo_dark_mode.svg";
  *
  * size = rendered height in px. The SVG keeps its native aspect ratio.
  */
-export default function Wordmark({ size = 22, style, className }) {
+export default function Wordmark({ size = 32, style, className }) {
   return (
     <picture>
       <source srcSet={logoDark} media="(prefers-color-scheme: dark)" />

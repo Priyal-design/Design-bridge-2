@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  IconHome, IconHub, IconProject, IconChat,
-  IconAdd, IconRocket, IconFigma, IconBell, IconSparkle,
+  IconHome, IconHub, IconProject, IconSparkle,
+  IconAdd, IconRocket, IconFigma, IconBell, IconClose, IconUserPlus,
 } from "./Icons";
 import Wordmark from "./Wordmark";
 import SearchBar from "./SearchBar";
@@ -14,7 +14,7 @@ const nav = [
   { to: "/hub", label: "Knowledge Hub", icon: IconHub },
   { to: "/projects/fee-management", label: "Project Detail", icon: IconProject },
   { section: "Intelligence" },
-  { to: "/chat", label: "Ask Design Bridge", icon: IconChat },
+  { to: "/chat", label: "Ask Design Bridge", icon: IconSparkle },
   { section: "Workflow" },
   { to: "/add", label: "Add Knowledge", icon: IconAdd },
   { to: "/onboarding", label: "Onboarding Hub", icon: IconRocket },
@@ -34,15 +34,29 @@ const titles = {
 export default function Layout({ children }) {
   const loc = useLocation();
   const [search, setSearch] = useState({ ...emptyProjectFilter });
+  const [showInvite, setShowInvite] = useState(false);
+  const [emails, setEmails] = useState([""]);
   let title = titles[loc.pathname] || "Design Bridge";
   if (loc.pathname.startsWith("/projects")) title = "Project Detail";
   if (loc.pathname.startsWith("/decisions")) title = "Decision Detail";
+
+  const addEmailField = () => setEmails((prev) => [...prev, ""]);
+  const updateEmail = (i, val) => setEmails((prev) => prev.map((e, idx) => (idx === i ? val : e)));
+  const removeEmail = (i) => setEmails((prev) => prev.filter((_, idx) => idx !== i));
+  const handleInvite = () => {
+    const valid = emails.filter((e) => e.trim());
+    if (valid.length) {
+      alert("Invited: " + valid.join(", "));
+      setEmails([""]);
+      setShowInvite(false);
+    }
+  };
 
   return (
     <div className="app">
       <aside className="sidebar">
         <div className="brand">
-          <NavLink to="/"><Wordmark size={22} /></NavLink>
+          <NavLink to="/"><Wordmark size={32} /></NavLink>
         </div>
 
         {nav.map((item, i) =>
@@ -79,17 +93,55 @@ export default function Layout({ children }) {
             onChange={setSearch}
             placeholder="Search projects, decisions, studies…"
             variant="global"
+            showFilter={false}
           />
           <div className="topbar-actions">
-            <NavLink to="/chat" className="btn btn-ghost btn-sm">
-              <span style={{ width: 15, height: 15, color: "var(--accent)" }}><IconSparkle /></span>
-              Ask AI
-            </NavLink>
+            <button className="btn btn-ghost btn-sm" onClick={() => setShowInvite(true)}>
+              <span style={{ width: 15, height: 15 }}><IconUserPlus /></span>
+              Invite Users
+            </button>
             <button className="icon-btn"><span style={{ width: 18, height: 18 }}><IconBell /></span></button>
           </div>
         </header>
         {children}
       </div>
+
+      {showInvite && (
+        <div className="modal-overlay" onClick={() => setShowInvite(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-head">
+              <h3>Invite Users</h3>
+              <button className="modal-close" onClick={() => setShowInvite(false)} aria-label="Close">
+                <span style={{ width: 16, height: 16 }}><IconClose /></span>
+              </button>
+            </div>
+            <p className="modal-desc">Add email addresses to invite team members to Design Bridge.</p>
+            <div className="modal-body">
+              {emails.map((email, i) => (
+                <div key={i} className="invite-row">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => updateEmail(i, e.target.value)}
+                    placeholder="email@company.com"
+                    className="invite-input"
+                  />
+                  {emails.length > 1 && (
+                    <button className="invite-remove" onClick={() => removeEmail(i)} aria-label="Remove">
+                      <span style={{ width: 14, height: 14 }}><IconClose /></span>
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button className="invite-add" onClick={addEmailField}>+ Add another</button>
+            </div>
+            <div className="modal-foot">
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowInvite(false)}>Cancel</button>
+              <button className="btn btn-primary btn-sm" onClick={handleInvite}>Send Invites</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

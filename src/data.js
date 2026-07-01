@@ -15,8 +15,7 @@ export const departmentColors = {
 export const statusBadge = {
   "In Development": "badge-yellow",
   Released: "badge-green",
-  Research: "badge-violet",
-  Active: "badge-blue",
+  Ongoing: "badge-blue",
 };
 
 export const projects = [
@@ -64,7 +63,7 @@ export const projects = [
     id: "photo-asset",
     name: "Photo Asset Management",
     department: "Photography",
-    status: "Research",
+    status: "In Development",
     owner: "Lena Ortiz",
     accessibility: 85,
     coverage: 78,
@@ -84,7 +83,7 @@ export const projects = [
     id: "patient-portal",
     name: "Patient Appointment Portal",
     department: "Medical",
-    status: "Active",
+    status: "Ongoing",
     owner: "Dr. Amara Osei",
     accessibility: 93,
     coverage: 96,
@@ -99,6 +98,26 @@ export const projects = [
     tags: ["Booking", "Patients", "Reminders"],
     summary:
       "A patient-facing portal for booking, rescheduling and managing medical appointments with reminders.",
+  },
+  {
+    id: "design-system",
+    name: "Design System Components",
+    department: "Finance",
+    status: "Ongoing",
+    owner: "Alex Kim",
+    accessibility: 96,
+    coverage: 98,
+    sprint: 12,
+    research: 10,
+    decisions: 19,
+    updated: "Today",
+    favorite: false,
+    team: "Design system team",
+    created: "5th Apr'26",
+    createdISO: "2026-04-05",
+    tags: ["Components", "Tokens", "Documentation", "Accessibility"],
+    summary:
+      "Building and maintaining a unified component library with design tokens, accessibility standards, and usage guidelines.",
   },
 ];
 
@@ -122,16 +141,30 @@ export const projectTeams = {
     { ini: "AO", color: "#34C759", name: "Amara Osei", role: "Clinical Lead" },
     { ini: "GS", color: "#007AFF", name: "Grace Stone", role: "Researcher" },
   ],
+  "design-system": [
+    { ini: "AK", color: "#AF52DE", name: "Alex Kim", role: "Lead Designer" },
+    { ini: "SL", color: "#007AFF", name: "Sarah Lee", role: "Product Manager" },
+    { ini: "PS", color: "#e056c8", name: "Priyal Shah", role: "Design Engineer" },
+    { ini: "LO", color: "#AF52DE", name: "Lena Ortiz", role: "Visual Designer" },
+  ],
 };
 
 // Distinct tag + team option lists for the search filter
 export const allTags = [...new Set(projects.flatMap((p) => p.tags || []))].sort();
 export const allTeams = [...new Set(projects.map((p) => p.team).filter(Boolean))].sort();
 
+export const allContributors = [
+  ...new Set(
+    Object.values(projectTeams).flatMap((team) => team.map((m) => m.name))
+  ),
+].sort();
+
 export const emptyProjectFilter = {
   query: "",
   tags: [],
   team: "",
+  status: "", // "" | "Ongoing" | "In Development" | "Released" | "Research"
+  contributor: "",
   createdFrom: "",
   createdTo: "",
   sortBy: "name", // "name" | "created" | "team"
@@ -140,7 +173,8 @@ export const emptyProjectFilter = {
 
 export function isFilterActive(f) {
   return Boolean(
-    f.query || f.tags.length || f.team || f.createdFrom || f.createdTo ||
+    f.query || f.tags.length || f.team || f.status || f.contributor ||
+    f.createdFrom || f.createdTo ||
     f.sortBy !== "name" || f.sortDir !== "asc"
   );
 }
@@ -155,6 +189,15 @@ export function filterAndSortProjects(list, f) {
     }
     if (f.tags.length && !f.tags.every((t) => (p.tags || []).includes(t))) return false;
     if (f.team && p.team !== f.team) return false;
+    if (f.status) {
+      if (f.status === "Ongoing" && p.status !== "Ongoing" && p.status !== "In Development") return false;
+      else if (p.status !== f.status) return false;
+    }
+    if (f.contributor) {
+      const team = projectTeams[p.id] || [];
+      const match = team.some((m) => m.name.toLowerCase().includes(f.contributor.toLowerCase()));
+      if (!match) return false;
+    }
     if (f.createdFrom && (p.createdISO || "") < f.createdFrom) return false;
     if (f.createdTo && (p.createdISO || "") > f.createdTo) return false;
     return true;
@@ -248,8 +291,8 @@ export const jira = {
 
 // Figma file previews shown in the Project Detail center column
 export const figmaFiles = [
-  { name: "Fee mgt v1 design", status: "Rejected", badge: "badge-pink", image: feemgt1 },
-  { name: "Fee mgt v2 design", status: "Final design", badge: "badge-green", image: feemgt2 },
+  { name: "Fee mgt v1 design", status: "Rejected", badge: "badge-pink", image: feemgt1, url: "https://www.figma.com/design/dTBPmQEg0eqBIaVokBE24G/FEE-PHASE-1?node-id=88-4390&t=RcfrekGLYqs5zDIZ-1" },
+  { name: "Fee mgt v2 design", status: "Final design", badge: "badge-green", image: feemgt2, url: "https://www.figma.com/design/dTBPmQEg0eqBIaVokBE24G/FEE-PHASE-1?node-id=129-10716&t=RcfrekGLYqs5zDIZ-1" },
 ];
 
 // Feedback Analysis study (donut) shown in the center column
