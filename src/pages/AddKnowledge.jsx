@@ -21,6 +21,8 @@ export default function AddKnowledge() {
   const [type, setType] = useState("decision");
   const [linked, setLinked] = useState({ "Fee Management System": true });
   const [tags, setTags] = useState(["cta", "accessibility", "conversion"]);
+  const [linkModal, setLinkModal] = useState(null);
+  const [linkReason, setLinkReason] = useState("");
 
   const toggleTag = (t) =>
     setTags((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]));
@@ -77,6 +79,15 @@ export default function AddKnowledge() {
               </div>
             </div>
             <div className="field"><label>Authors</label><input placeholder="Add contributors" defaultValue="Alex Kim, Priya Sharma" /></div>
+            <div className="field"><label>Target Audience</label>
+              <select defaultValue="">
+                <option value="" disabled>Select target audience</option>
+                <option>Students</option>
+                <option>Working Professionals</option>
+                <option>Elderly</option>
+                <option>All Clients and Businesses</option>
+              </select>
+            </div>
             <div className="field-row">
               <div className="field"><label>Source URL</label><input placeholder="https://" /></div>
               <div className="field"><label>Figma Link</label><input placeholder="figma.com/file/…" /></div>
@@ -132,7 +143,7 @@ export default function AddKnowledge() {
                   We found {relatedProjects.length} projects that might be relevant — view or link them.
                 </div>
               </div>
-              <span className="badge badge-violet">{relatedProjects.length} suggestions</span>
+              <span className="badge badge-blue">{relatedProjects.length} suggestions</span>
             </div>
             <div className="col gap12">
               {relatedProjects.map((p) => {
@@ -165,7 +176,14 @@ export default function AddKnowledge() {
                       <button
                         type="button"
                         className={"btn btn-sm linkproj-btn " + (on ? "btn-green" : "btn-primary")}
-                        onClick={() => setLinked((l) => ({ ...l, [p.name]: !on }))}>
+                        onClick={() => {
+                          if (on) {
+                            setLinked((l) => ({ ...l, [p.name]: false }));
+                          } else {
+                            setLinkModal(p);
+                            setLinkReason("");
+                          }
+                        }}>
                         {on
                           ? <><span style={{ width: 15, height: 15, display: "grid" }}><IconCheck /></span> Linked</>
                           : <><span style={{ width: 15, height: 15, display: "grid" }}><IconLink /></span> Link</>}
@@ -203,6 +221,39 @@ export default function AddKnowledge() {
           <button className="btn btn-primary" onClick={() => setStep((s) => s + 1)}>
             {step === 1 ? "Publish" : "Continue"} <span style={{ width: 16, height: 16 }}><IconArrow /></span>
           </button>
+        </div>
+      )}
+      {/* Link reason modal */}
+      {linkModal && (
+        <div className="modal-overlay" onClick={() => setLinkModal(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-head">
+              <h3>Link Project</h3>
+              <button className="modal-close" onClick={() => setLinkModal(null)}><span style={{ width: 16, height: 16, display: "grid" }}><IconClose /></span></button>
+            </div>
+            <div className="modal-desc">
+              Tell us why <strong>{linkModal.name}</strong> is helpful to the current project.
+            </div>
+            <div className="modal-body">
+              <textarea
+                className="link-textarea"
+                rows="3"
+                placeholder="e.g. Shares the same CTA pattern we're improving…"
+                value={linkReason}
+                onChange={(e) => setLinkReason(e.target.value)}
+              />
+            </div>
+            <div className="modal-foot">
+              <button className="btn btn-ghost" onClick={() => setLinkModal(null)}>Cancel</button>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  setLinked((l) => ({ ...l, [linkModal.name]: true }));
+                  setLinkModal(null);
+                }}
+              >Link</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

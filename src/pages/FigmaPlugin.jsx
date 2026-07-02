@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { chatThread, knowledgeTypes } from "../data";
-import { IconClose, IconSparkle, IconArrow, IconCheck } from "../components/Icons";
+import { IconClose, IconSparkle, IconArrow, IconCheck, IconLink, IconPlay } from "../components/Icons";
 import MagicWand from "../components/MagicWand";
 import Lottie from "../components/Lottie";
 import published from "../assets/published.json";
 import Wordmark from "../components/Wordmark";
 
-const suggestedTags = ["cta", "accessibility", "conversion", "above-the-fold", "checkout", "usability"];
+const suggestedTags = ["cta", "accessibility", "conversion", "above-the-fold", "checkout", "usability", "mobile", "heatmap"];
 const addSteps = ["Choose", "Details", "Publish"];
+
+const relatedProjects = [
+  { id: "fee-management", name: "Fee Management System", dept: "Finance", updated: "3 days ago", desc: "Shares the checkout CTA pattern and above-the-fold action study.", color: "#007AFF" },
+  { id: "photo-asset", name: "Photo Asset Management", dept: "Photography", updated: "1 week ago", desc: "Referenced the same heatmap method to validate the primary action.", color: "#AF52DE" },
+  { id: "microscope-config", name: "Microscope Configuration Portal", dept: "Microscopy", updated: "2 weeks ago", desc: "Similar layout reshuffle to surface the key task above the fold.", color: "#34C759" },
+];
 
 // Small confidence ring — matches the Ask Design Bridge chat answer.
 function ConfRing({ value, size = 44 }) {
@@ -59,7 +65,7 @@ function PluginAsk() {
             <ConfRing value={chatThread.confidence} />
           </div>
 
-          <div className="badge badge-violet mb8">Decision · Design Decision Insights</div>
+          <div className="badge badge-violet mb8">Decision Insights</div>
           <p style={{ fontSize: 13.5, lineHeight: 1.6, marginBottom: 12 }}>{chatThread.answer[0]}</p>
 
           <div className="faint" style={{ fontSize: 11.5, marginBottom: 6 }}>Metrics</div>
@@ -113,6 +119,9 @@ function PluginAdd() {
   const [step, setStep] = useState(0);
   const [type, setType] = useState("decision");
   const [tags, setTags] = useState(["cta", "accessibility"]);
+  const [linked, setLinked] = useState({ "Fee Management System": true });
+  const [linkModal, setLinkModal] = useState(null);
+  const [linkReason, setLinkReason] = useState("");
 
   const toggleTag = (t) => setTags((p) => (p.includes(t) ? p.filter((x) => x !== t) : [...p, t]));
 
@@ -159,6 +168,24 @@ function PluginAdd() {
             <div className="field"><label>Category</label>
               <select defaultValue="Decision"><option>Decision</option><option>Research</option><option>Guideline</option><option>Metric</option></select>
             </div>
+          </div>
+          <div className="field"><label>Authors</label><input placeholder="Add contributors" defaultValue="Alex Kim, Priya Sharma" /></div>
+          <div className="field"><label>Target Audience</label>
+            <select defaultValue="">
+              <option value="" disabled>Select target audience</option>
+              <option>Students</option>
+              <option>Working Professionals</option>
+              <option>Elderly</option>
+              <option>All Clients and Businesses</option>
+            </select>
+          </div>
+          <div className="field-row">
+            <div className="field"><label>Source URL</label><input placeholder="https://" /></div>
+            <div className="field"><label>Figma Link</label><input placeholder="figma.com/file/…" /></div>
+          </div>
+          <div className="field"><label>Jira Link</label><input placeholder="jedi.atlassian.net/…" /></div>
+          <div className="field"><label>Files</label>
+            <div className="dropzone">📎 Drag &amp; drop files here, or <span style={{ color: "var(--accent)" }}>browse</span></div>
           </div>
           <div className="field" style={{ marginBottom: 0 }}><label>Tags</label>
             <div className="tag-input-box">
@@ -214,6 +241,40 @@ function PluginAdd() {
           <button className="btn btn-primary btn-sm" onClick={() => setStep((s) => s + 1)}>
             {step === 1 ? "Publish" : "Continue"} <span style={{ width: 14, height: 14 }}><IconArrow /></span>
           </button>
+        </div>
+      )}
+
+      {/* Link reason modal */}
+      {linkModal && (
+        <div className="modal-overlay" onClick={() => setLinkModal(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-head">
+              <h3>Link Project</h3>
+              <button className="modal-close" onClick={() => setLinkModal(null)}><span style={{ width: 16, height: 16, display: "grid" }}><IconClose /></span></button>
+            </div>
+            <div className="modal-desc">
+              Tell us why <strong>{linkModal.name}</strong> is helpful to the current project.
+            </div>
+            <div className="modal-body">
+              <textarea
+                className="link-textarea"
+                rows="3"
+                placeholder="e.g. Shares the same CTA pattern we're improving…"
+                value={linkReason}
+                onChange={(e) => setLinkReason(e.target.value)}
+              />
+            </div>
+            <div className="modal-foot">
+              <button className="btn btn-ghost" onClick={() => setLinkModal(null)}>Cancel</button>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  setLinked((l) => ({ ...l, [linkModal.name]: true }));
+                  setLinkModal(null);
+                }}
+              >Link</button>
+            </div>
+          </div>
         </div>
       )}
     </div>

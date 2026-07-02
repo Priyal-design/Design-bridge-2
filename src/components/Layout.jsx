@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   IconHome, IconHub, IconProject, IconSparkle,
-  IconAdd, IconRocket, IconFigma, IconBell, IconClose, IconUserPlus,
+  IconAdd, IconUfo, IconFigma, IconBell, IconClose, IconUserPlus,
 } from "./Icons";
 import Wordmark from "./Wordmark";
 import SearchBar from "./SearchBar";
@@ -14,20 +14,20 @@ const nav = [
   { to: "/hub", label: "Knowledge Hub", icon: IconHub },
   { to: "/projects/fee-management", label: "Project Detail", icon: IconProject },
   { section: "Intelligence" },
-  { to: "/chat", label: "Ask Design Bridge", icon: IconSparkle },
+  { to: "/chat", label: "Ask Jedi Bot", icon: IconSparkle },
   { section: "Workflow" },
   { to: "/add", label: "Add Knowledge", icon: IconAdd },
-  { to: "/onboarding", label: "Onboarding Hub", icon: IconRocket },
+  { to: "/onboarding", label: "My Space", icon: IconUfo },
   { to: "/figma", label: "Figma Plugin", icon: IconFigma },
 ];
 
 const titles = {
   "/dashboard": "Home Dashboard",
   "/hub": "Knowledge Hub",
-  "/chat": "Ask Design Bridge",
+  "/chat": "Ask Jedi Bot",
   "/graph": "Knowledge Graph",
   "/add": "Add Knowledge",
-  "/onboarding": "Onboarding Hub",
+  "/onboarding": "My Space",
   "/figma": "Figma Plugin",
 };
 

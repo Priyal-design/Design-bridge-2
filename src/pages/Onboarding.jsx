@@ -18,22 +18,44 @@ export default function Onboarding() {
 
   return (
     <div className="page">
-      {/* Hero */}
-      <div className="onb-hero mb24">
-        <div className="badge badge-blue mb12">Onboarding</div>
-        <h2 style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-0.8px" }}>Welcome, Priyal</h2>
-        <p className="muted mt12" style={{ fontSize: 15.5, maxWidth: 600 }}>
-          Everything your team knows about your projects all in one place
-        </p>
-        <div className="onb-chips mt20">
-          {chips.map(([k, v]) => (
-            <div key={k} className="onb-chip"><span className="faint">{k}</span><b>{v}</b></div>
-          ))}
-          <Link to="/figma" className="onb-chip link"><span style={{ width: 14, height: 14 }}><IconFigma /></span> Figma Linked</Link>
+      {/* Hero + Upcoming Meetings side by side */}
+      <div className="onb-hero-row mb24">
+        <div className="onb-hero">
+          <div className="badge badge-blue mb12">Personalized for you</div>
+          <h2 style={{ fontSize: 30, fontWeight: 800, letterSpacing: "-0.8px" }}>My Space</h2>
+          <p className="muted mt12" style={{ fontSize: 15.5, maxWidth: 600 }}>
+            Your active projects, team updates, and shortcuts tailored for your workflow
+          </p>
+          <div className="onb-chips mt20">
+            {chips.map(([k, v]) => (
+              <div key={k} className="onb-chip"><span className="faint">{k}</span><b>{v}</b></div>
+            ))}
+            <Link to="/figma" className="onb-chip link"><span style={{ width: 14, height: 14 }}><IconFigma /></span> Figma Linked</Link>
+          </div>
+        </div>
+        <div className="card onb-meetings">
+          <div className="section-title">Upcoming Meetings</div>
+          <div className="col gap12">
+            <div className="meeting-row">
+              <span className="meeting-dot" />
+              <span style={{ fontWeight: 600, fontSize: 13.5 }}>Brainstorm</span>
+              <span className="faint" style={{ fontSize: 12.5, marginLeft: "auto" }}>8 – 9 AM</span>
+            </div>
+            <div className="meeting-row">
+              <span className="meeting-dot dashed" />
+              <span style={{ fontWeight: 600, fontSize: 13.5 }}>Project overview</span>
+              <span className="faint" style={{ fontSize: 12.5, marginLeft: "auto" }}>9 – 10 AM</span>
+            </div>
+            <div className="meeting-row">
+              <span className="meeting-dot dashed" />
+              <span style={{ fontWeight: 600, fontSize: 13.5 }}>Break</span>
+              <span className="faint" style={{ fontSize: 12.5, marginLeft: "auto" }}>1 – 2 PM</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Row 1: projects tree + responsibilities — unified inside one background card */}
+      {/* Projects tree + responsibilities + workspace — one unified card */}
       <div className="card onb-unify mb24">
         <div className="onb-panel">
           <div className="section-title">Projects Relevant To You</div>
@@ -47,7 +69,6 @@ export default function Onboarding() {
                     className={"tree-item" + (open ? " active" : "")}
                     onClick={() => setSelected(node.name)}
                   >
-                    <span className="tree-caret">{open ? "▾" : "▸"}</span>
                     <span style={{ width: 16, height: 16, color: "var(--accent)" }}><IconProject /></span>
                     <span style={{ fontWeight: 600, fontSize: 14 }}>{node.name}</span>
                   </button>
@@ -67,9 +88,9 @@ export default function Onboarding() {
           </div>
 
           <div className="resp-folder">
-            <span className="tree-caret">▾</span>
-            <span style={{ width: 16, height: 16, color: "var(--accent)" }}><IconProject /></span>
-            <span style={{ fontWeight: 700, fontSize: 14 }}>{ws.name}</span>
+            <span style={{ width: 20, height: 20, color: "var(--accent)" }}><IconProject /></span>
+            <span style={{ fontWeight: 700, fontSize: 14, color: "var(--accent)" }}>{ws.name}</span>
+            <Link to={`/projects/${ws.id}`} style={{ marginLeft: 4, width: 24, height: 24, display: "grid", placeItems: "center", color: "var(--accent)" }}><IconArrow /></Link>
           </div>
 
           <div className="resp-table">
@@ -97,66 +118,56 @@ export default function Onboarding() {
               );
             })}
           </div>
-        </div>
-      </div>
 
-      {/* Row 2: active project workspace */}
-      <div className="section-title">Your Active Project Workspace — {ws.name}</div>
-      <div className="work-grid">
-        {/* Key deadlines */}
-        <div className="card">
-          <div className="section-title">Key Deadlines</div>
-          <div className="col gap10">
-            {deadlines.map((d) => (
-              <div key={d.t} className="work-row">
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 13.5 }}>{d.t}</div>
-                  <div className="faint" style={{ fontSize: 12 }}>Due · {d.due}</div>
-                </div>
-                <span className={"badge " + d.badge}>{d.state}</span>
+          {/* Workspace card — deadlines/tasks + quick actions/updates */}
+          <div className="onb-workspace-grid" style={{ marginTop: 20 }}>
+            {/* Key deadlines + Your tasks */}
+            <div className="onb-workspace-card">
+              <div className="section-title" style={{ fontSize: 12 }}>Key Deadlines</div>
+              <div className="col gap10 mb20">
+                {deadlines.map((d) => (
+                  <div key={d.t} className="work-row">
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: 13.5 }}>{d.t}</div>
+                      <div className="faint" style={{ fontSize: 12 }}>Due · {d.due}</div>
+                    </div>
+                    <span className={"badge " + d.badge}>{d.state}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Your tasks */}
-        <div className="card">
-          <div className="row between mb16" style={{ alignItems: "center" }}>
-            <div className="section-title" style={{ margin: 0 }}>Your Tasks</div>
-            <div className="row gap8" style={{ alignItems: "center" }}>
-              <div className="avatar" style={{ width: 26, height: 26, fontSize: 10, background: "linear-gradient(180deg,#e056c8,#b3309e)" }}>PS</div>
-              <span className="faint" style={{ fontSize: 12.5 }}>Priyal Shah</span>
+              <div className="section-title" style={{ fontSize: 12 }}>Your Tasks</div>
+              <div className="col gap10">
+                {tasks.map((t) => (
+                  <div key={t.t} className="work-row">
+                    <div className="row gap10" style={{ alignItems: "center" }}>
+                      <span className="task-check">{t.state === "Done" ? <IconCheck /> : ""}</span>
+                      <span style={{ fontWeight: 600, fontSize: 13.5 }}>{t.t}</span>
+                    </div>
+                    <span className={"badge " + t.badge}>{t.state}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="col gap10">
-            {tasks.map((t) => (
-              <div key={t.t} className="work-row">
-                <div className="row gap10" style={{ alignItems: "center" }}>
-                  <span className="task-check">{t.state === "Done" ? <span style={{ width: 12, height: 12 }}><IconCheck /></span> : ""}</span>
-                  <span style={{ fontWeight: 600, fontSize: 13.5 }}>{t.t}</span>
-                </div>
-                <span className={"badge " + t.badge}>{t.state}</span>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Quick actions & updates */}
-        <div className="card">
-          <div className="section-title">Quick Actions</div>
-          <div className="col gap8 mb20">
-            {quickActions.map((a) => (
-              <button key={a} className="work-action">{a} <span style={{ width: 14, height: 14 }}><IconArrow /></span></button>
-            ))}
-          </div>
-          <div className="section-title">Recent Updates</div>
-          <div className="col gap0">
-            {updates.map((u, i) => (
-              <div key={i} className="update-row">
-                <span className="update-dot" />
-                <div style={{ fontSize: 13 }}><b>{u.who}</b> {u.text} <span className="faint">· {u.time}</span></div>
+            {/* Quick actions & updates */}
+            <div className="onb-workspace-card">
+              <div className="section-title" style={{ fontSize: 12 }}>Quick Actions</div>
+              <div className="col gap8 mb20">
+                {quickActions.map((a) => (
+                  <button key={a} className="work-action">{a} <span style={{ width: 14, height: 14 }}><IconArrow /></span></button>
+                ))}
               </div>
-            ))}
+              <div className="section-title" style={{ fontSize: 12 }}>Recent Updates</div>
+              <div className="col gap0">
+                {updates.map((u, i) => (
+                  <div key={i} className="update-row">
+                    <span className="update-dot" />
+                    <div style={{ fontSize: 13 }}><b>{u.who}</b> {u.text} <span className="faint">· {u.time}</span></div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -481,6 +481,7 @@ export const onboarding = {
 // and the responsibilities table + active-project workspace update to match.
 export const onboardingWorkspaces = [
   {
+    id: "fee-management",
     name: "Fee Management",
     children: ["Checkout flow", "Fee schedule", "Refund policy"],
     manager: { name: "John Chen", role: "Design Manager / PM" },
@@ -491,13 +492,11 @@ export const onboardingWorkspaces = [
       { area: "Manager", owner: "John Chen", cat: "PM Owner", color: "#34C759" },
     ],
     deadlines: [
-      { t: "Contract Review", due: "Nov 1", badge: "badge-yellow", state: "In progress" },
       { t: "Validate Prototype", due: "Nov 6", badge: "badge-blue", state: "Queued" },
       { t: "Finalize Design Costs", due: "Nov 7", badge: "badge-pink", state: "Blocked" },
     ],
     tasks: [
       { t: "Validate UI Prototype", badge: "badge-blue", state: "In Review" },
-      { t: "Input Final Design Costs", badge: "badge-yellow", state: "In progress" },
       { t: "Publish Fee Schedule", badge: "badge-green", state: "Done" },
     ],
     quickActions: ["Propose Fee Agreement", "Review PM Actions", "Configure Workflow"],
@@ -508,6 +507,7 @@ export const onboardingWorkspaces = [
     ],
   },
   {
+    id: "patient-portal",
     name: "Patient Portal Workspace",
     children: ["Booking calendar", "Reminders", "Visit history"],
     manager: { name: "Dr. Amara Osei", role: "Clinical Product Manager" },
@@ -518,12 +518,10 @@ export const onboardingWorkspaces = [
       { area: "Manager", owner: "Dr. Amara Osei", cat: "PM Owner", color: "#34C759" },
     ],
     deadlines: [
-      { t: "HIPAA Review", due: "Nov 3", badge: "badge-pink", state: "Blocked" },
       { t: "Reminder Flow QA", due: "Nov 9", badge: "badge-yellow", state: "In progress" },
       { t: "Booking Launch", due: "Nov 14", badge: "badge-blue", state: "Queued" },
     ],
     tasks: [
-      { t: "Wire Booking Calendar", badge: "badge-blue", state: "In Review" },
       { t: "Draft Reminder Copy", badge: "badge-yellow", state: "In progress" },
       { t: "Accessibility Audit", badge: "badge-green", state: "Done" },
     ],
@@ -535,6 +533,7 @@ export const onboardingWorkspaces = [
     ],
   },
   {
+    id: "microscope-config",
     name: "Microscopy Dashboard Redesign",
     children: ["Presets", "Calibration", "Device sync"],
     manager: { name: "Marcus Vogel", role: "Lead Product Manager" },
@@ -547,10 +546,8 @@ export const onboardingWorkspaces = [
     deadlines: [
       { t: "Preset Schema Review", due: "Nov 4", badge: "badge-yellow", state: "In progress" },
       { t: "Calibration Test Run", due: "Nov 10", badge: "badge-blue", state: "Queued" },
-      { t: "Device Sync Spec", due: "Nov 12", badge: "badge-pink", state: "Blocked" },
     ],
     tasks: [
-      { t: "Prototype Preset Manager", badge: "badge-blue", state: "In Review" },
       { t: "Validate Calibration UI", badge: "badge-yellow", state: "In progress" },
       { t: "Document Device Presets", badge: "badge-green", state: "Done" },
     ],
