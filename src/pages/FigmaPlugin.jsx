@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { chatThread, knowledgeTypes } from "../data";
-import { IconClose, IconSparkle, IconArrow, IconCheck, IconLink, IconPlay } from "../components/Icons";
+import { IconClose, IconSparkle, IconArrow, IconCheck, IconLink, IconPlay, IconDecision, IconGraph, IconRuler, IconGauge, IconProject, IconLock } from "../components/Icons";
 import MagicWand from "../components/MagicWand";
 import Lottie from "../components/Lottie";
 import published from "../assets/published.json";
@@ -15,6 +15,15 @@ const relatedProjects = [
   { id: "photo-asset", name: "Photo Asset Management", dept: "Photography", updated: "1 week ago", desc: "Referenced the same heatmap method to validate the primary action.", color: "#AF52DE" },
   { id: "microscope-config", name: "Microscope Configuration Portal", dept: "Microscopy", updated: "2 weeks ago", desc: "Similar layout reshuffle to surface the key task above the fold.", color: "#34C759" },
 ];
+
+const typeIcons = {
+  decision: IconDecision,
+  research: IconGraph,
+  guideline: IconRuler,
+  evidence: IconGauge,
+  documentation: IconProject,
+  private: IconLock,
+};
 
 // Small confidence ring — matches the Ask Design Bridge chat answer.
 function ConfRing({ value, size = 44 }) {
@@ -88,6 +97,11 @@ function PluginAsk() {
               <span key={e.title} className="tag">{e.icon} {e.title}</span>
             ))}
           </div>
+
+          <Link to="/chat" state={{ openSources: true }} className="btn btn-ghost btn-sm open-sources-btn">
+            <span style={{ width: 15, height: 15 }}><IconLink /></span>
+            Open Sources
+          </Link>
         </div>
       )}
 
@@ -144,12 +158,12 @@ function PluginAdd() {
       {step === 0 && (
         <>
           <div className="faint mb12" style={{ fontSize: 12.5 }}>What are you capturing?</div>
-          <div className="type-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+          <div className="type-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
             {knowledgeTypes.map((t) => (
-              <div key={t.key} className={"type-card" + (type === t.key ? " sel" : "")} style={{ padding: "14px 12px" }} onClick={() => setType(t.key)}>
-                <div className="type-ic" style={{ width: 36, height: 36, fontSize: 18, marginBottom: 8 }}>{t.icon}</div>
+              <div key={t.key} className={"type-card" + (type === t.key ? " sel" : "")} style={{ padding: "14px 12px", height: 148 }} onClick={() => setType(t.key)}>
+                <div className="type-ic" style={{ width: 36, height: 36, marginBottom: 8 }}>{(() => { const Ic = typeIcons[t.key]; return Ic ? <Ic /> : t.icon; })()}</div>
                 <div style={{ fontWeight: 700, fontSize: 13 }}>{t.label}</div>
-                <div className="type-desc" style={{ fontSize: 11, marginTop: 2 }}>{t.desc}</div>
+                <div className="type-desc" style={{ fontSize: 11, marginTop: 4 }}>{t.desc}</div>
               </div>
             ))}
           </div>
@@ -283,9 +297,10 @@ function PluginAdd() {
 
 export default function FigmaPlugin() {
   const [tab, setTab] = useState("ask"); // ask | add
+  const [selected, setSelected] = useState("screen"); // null | "screen"
 
   return (
-    <div className="figma-stage">
+    <div className="figma-stage" onClick={() => setSelected(null)}>
       <div style={{ position: "absolute", top: 24, left: 28 }}>
         <Link to="/" className="faint" style={{ fontSize: 13 }}>← Back to site</Link>
       </div>
@@ -301,36 +316,58 @@ export default function FigmaPlugin() {
           </div>
 
           <div style={{ padding: 30 }}>
-            <div style={{ height: 14, width: "55%", background: "var(--panel-3)", borderRadius: 5, marginBottom: 24 }} />
-            <div className="card" style={{ padding: 16, marginBottom: 16 }}>
-              <div style={{ height: 10, width: "40%", background: "var(--border-2)", borderRadius: 4, marginBottom: 10 }} />
-              <div style={{ height: 10, width: "70%", background: "var(--panel-3)", borderRadius: 4 }} />
-            </div>
+            <span style={{ fontSize: 11, color: "var(--accent)", fontWeight: 600, marginLeft: 4, marginBottom: 6, display: "block" }}>Fee Home UI</span>
 
-            <div style={{ position: "relative", marginTop: 30 }}>
-              <button className="btn btn-primary" style={{ width: "100%" }}>Pay Now — $1,240.00</button>
-              <div className="selection-frame" style={{ inset: -8 }}>
-                <span className="sel-handle" style={{ top: -5, left: -5 }} />
-                <span className="sel-handle" style={{ top: -5, right: -5 }} />
-                <span className="sel-handle" style={{ bottom: -5, left: -5 }} />
-                <span className="sel-handle" style={{ bottom: -5, right: -5 }} />
-                <span style={{ position: "absolute", top: -24, left: 0, fontSize: 11, color: "var(--accent)", fontWeight: 600 }}>Primary CTA</span>
+            <div
+              className="figma-screen"
+              onClick={(e) => { e.stopPropagation(); setSelected("screen"); }}
+              style={{ position: "relative", border: "1.5px solid var(--accent)" }}
+            >
+              <div style={{ padding: 16 }}>
+                {/* Fee Summary card */}
+                <div className="card" style={{ padding: 16, marginBottom: 16 }}>
+                  <div style={{ fontSize: 11, color: "var(--text-faint)", fontWeight: 600, marginBottom: 4 }}>Fee Summary</div>
+                  <div style={{ fontSize: 24, fontWeight: 700 }}>$1,240.00</div>
+                </div>
+
+                {/* Pay Now button */}
+                <button
+                  className="btn btn-primary"
+                  style={{ width: "100%", marginBottom: 16 }}
+                  onClick={(e) => { e.stopPropagation(); setSelected("screen"); }}
+                >
+                  Pay Now
+                </button>
+
+                {/* Blank cards */}
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="card" style={{ padding: 14, marginBottom: 8 }}>
+                    <div style={{ height: 8, width: "50%", background: "var(--panel-3)", borderRadius: 4, marginBottom: 6 }} />
+                    <div style={{ height: 8, width: "30%", background: "var(--panel-3)", borderRadius: 4 }} />
+                  </div>
+                ))}
               </div>
-            </div>
 
-            <div className="card" style={{ padding: 16, marginTop: 40 }}>
-              <div style={{ height: 10, width: "60%", background: "var(--panel-3)", borderRadius: 4, marginBottom: 10 }} />
-              <div style={{ height: 10, width: "45%", background: "var(--panel-3)", borderRadius: 4 }} />
+              {/* Selection frame */}
+              {selected === "screen" && (
+                <div className="selection-frame" style={{ inset: -8 }}>
+                  <span className="sel-handle" style={{ top: -5, left: -5 }} />
+                  <span className="sel-handle" style={{ top: -5, right: -5 }} />
+                  <span className="sel-handle" style={{ bottom: -5, left: -5 }} />
+                  <span className="sel-handle" style={{ bottom: -5, right: -5 }} />
+                  <span style={{ position: "absolute", top: -24, left: 0, fontSize: 11, color: "var(--accent)", fontWeight: 600 }}>Fee Home UI</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Plugin panel */}
-        <div className="plugin-panel" style={{ width: 420 }}>
+        <div className="plugin-panel" style={{ width: 552, height: 756 }}>
           <div className="plugin-head plugin-head-col">
             <div className="row between" style={{ width: "100%", alignItems: "center" }}>
               <div className="plugin-brand">
-                <Wordmark size={20} />
+                <Wordmark size={24} />
               </div>
               <button className="del-btn" style={{ position: "static" }}><span style={{ width: 14, height: 14 }}><IconClose /></span></button>
             </div>

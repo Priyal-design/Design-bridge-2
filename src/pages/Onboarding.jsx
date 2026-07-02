@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { onboardingWorkspaces } from "../data";
-import { IconArrow, IconCheck, IconProject, IconFigma } from "../components/Icons";
+import { IconArrow, IconCheck, IconProject, IconFigma, IconLock } from "../components/Icons";
 
 const chips = [
   ["Current Sprint", "Sprint 14"],
@@ -11,8 +11,17 @@ const chips = [
 
 const initials = (name) => name.replace(/^Dr\.\s*/, "").split(" ").map((n) => n[0]).join("").slice(0, 2);
 
+const privateNotes = [
+  { name: "CTA placement rationale", date: "12/03/26", status: "Draft", type: "Design Decision", links: "Figma, JIRA-2041" },
+  { name: "Heatmap findings summary", date: "10/03/26", status: "Draft", type: "Research", links: "Notion, Slides" },
+  { name: "Accessibility review notes", date: "08/03/26", status: "Draft", type: "Guideline", links: "Docs, Sheet" },
+  { name: "Stakeholder feedback log", date: "05/03/26", status: "Draft", type: "Evidence", links: "Confluence" },
+  { name: "Sprint 14 retro action items", date: "01/03/26", status: "Draft", type: "Documentation", links: "JIRA-2038" },
+];
+
 export default function Onboarding() {
   const [selected, setSelected] = useState(onboardingWorkspaces[0].name);
+  const [notesOpen, setNotesOpen] = useState(false);
   const ws = onboardingWorkspaces.find((w) => w.name === selected) || onboardingWorkspaces[0];
   const { responsibilities, manager, deadlines, tasks, quickActions, updates } = ws;
 
@@ -170,6 +179,55 @@ export default function Onboarding() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Private Notes */}
+      <div className="card mb24" style={{ overflow: "hidden" }}>
+        <button
+          onClick={() => setNotesOpen((o) => !o)}
+          style={{
+            display: "flex", alignItems: "center", gap: 10, width: "100%",
+            padding: 0, border: "none", background: "none", cursor: "pointer",
+            fontSize: 14, fontWeight: 600, color: "var(--text)",
+          }}
+        >
+          <span style={{
+            width: 36, height: 36, borderRadius: 10, flex: "none",
+            display: "grid", placeItems: "center",
+            background: "rgba(175, 82, 222, 0.15)", color: "#AF52DE",
+          }}>
+            <span style={{ width: 18, height: 18 }}><IconLock /></span>
+          </span>
+          <span>Private Notes</span>
+          <span className="faint" style={{ marginLeft: "auto", fontSize: 12, transition: "transform 0.2s ease", transform: notesOpen ? "rotate(180deg)" : "none" }}>▼</span>
+        </button>
+
+        {notesOpen && (
+          <div style={{ marginTop: 16, overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid var(--border)", color: "var(--text-subtle)", fontWeight: 600 }}>
+                  <th style={{ textAlign: "left", padding: "10px 12px" }}>Name of Note</th>
+                  <th style={{ textAlign: "left", padding: "10px 12px" }}>Date of Creation</th>
+                  <th style={{ textAlign: "left", padding: "10px 12px" }}>Status</th>
+                  <th style={{ textAlign: "left", padding: "10px 12px" }}>Type of Knowledge</th>
+                  <th style={{ textAlign: "left", padding: "10px 12px" }}>Links</th>
+                </tr>
+              </thead>
+              <tbody>
+                {privateNotes.map((n) => (
+                  <tr key={n.name} style={{ borderBottom: "1px solid var(--border)" }}>
+                    <td style={{ padding: "10px 12px", fontWeight: 600 }}>{n.name}</td>
+                    <td style={{ padding: "10px 12px", color: "var(--text-dim)" }}>{n.date}</td>
+                    <td style={{ padding: "10px 12px" }}><span className="badge badge-gray">Draft</span></td>
+                    <td style={{ padding: "10px 12px", color: "var(--text-dim)" }}>{n.type}</td>
+                    <td style={{ padding: "10px 12px", color: "var(--accent)", fontWeight: 500 }}>{n.links}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

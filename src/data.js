@@ -2,6 +2,11 @@
 
 import feemgt1 from "./images/Feemgt1.jpg";
 import feemgt2 from "./images/Feemgt2.jpg";
+import usabImg1 from "./images/Image1.png";
+import usabImg2 from "./images/Image2.png";
+import usabImg3 from "./images/Image3.png";
+import photoAssetImg from "./images/Sameness in design UI.jpeg";
+import microscopeImg from "./images/microscopy.png";
 
 export const company = "Jedi";
 
@@ -214,11 +219,8 @@ export function filterAndSortProjects(list, f) {
 }
 
 export const kpis = [
-  { label: "Projects", value: "42", trend: "+3 this month", glyph: "📁", color: "#007AFF" },
   { label: "Design Decisions", value: "1,482", trend: "+128 this month", glyph: "🧭", color: "#AF52DE" },
   { label: "Research Studies", value: "221", trend: "+19 this month", glyph: "🔬", color: "#FF9500" },
-  { label: "Knowledge Coverage", value: "92%", trend: "+4% this quarter", glyph: "🧠", color: "#34C759" },
-  { label: "Accessibility Avg", value: "89%", trend: "+6% this quarter", glyph: "♿", color: "#FF9500" },
 ];
 
 export const knowledgeGaps = [
@@ -247,6 +249,8 @@ export const contributors = [
   { name: "Alex Kim", role: "UX Designer", color: "#AF52DE" },
   { name: "Priya Sharma", role: "Researcher", color: "#AF52DE" },
   { name: "David Chen", role: "Engineer", color: "#FF9500" },
+  { name: "Adrian", role: "Researcher", color: "#AF52DE" },
+  { name: "Marcus", role: "Accessibility Specialist", color: "#FF9500" },
 ];
 
 export const projectMetrics = [
@@ -290,10 +294,19 @@ export const jira = {
 };
 
 // Figma file previews shown in the Project Detail center column
-export const figmaFiles = [
-  { name: "Fee mgt v1 design", status: "Rejected", badge: "badge-pink", image: feemgt1, url: "https://www.figma.com/design/dTBPmQEg0eqBIaVokBE24G/FEE-PHASE-1?node-id=88-4390&t=RcfrekGLYqs5zDIZ-1" },
-  { name: "Fee mgt v2 design", status: "Final design", badge: "badge-green", image: feemgt2, url: "https://www.figma.com/design/dTBPmQEg0eqBIaVokBE24G/FEE-PHASE-1?node-id=129-10716&t=RcfrekGLYqs5zDIZ-1" },
-];
+export const figmaFiles = {
+  "fee-management": [
+    { name: "Fee mgt v1 design", status: "Rejected", badge: "badge-pink", image: feemgt1, url: "https://www.figma.com/design/dTBPmQEg0eqBIaVokBE24G/FEE-PHASE-1?node-id=88-4390&t=RcfrekGLYqs5zDIZ-1" },
+    { name: "Fee mgt v2 design", status: "Final design", badge: "badge-green", image: feemgt2, url: "https://www.figma.com/design/dTBPmQEg0eqBIaVokBE24G/FEE-PHASE-1?node-id=129-10716&t=RcfrekGLYqs5zDIZ-1" },
+  ],
+  "photo-asset": [
+    { name: "Photo Asset v1 design", status: "In Review", badge: "badge-yellow", image: photoAssetImg, url: "#" },
+    { name: "Photo Asset v2 design", status: "Final design", badge: "badge-green", image: photoAssetImg, url: "#" },
+  ],
+  "microscope-config": [
+    { name: "Microscope v1 design", status: "Released", badge: "badge-green", image: microscopeImg, url: "#" },
+  ],
+};
 
 // Feedback Analysis study (donut) shown in the center column
 export const feedbackAnalysis = {
@@ -336,12 +349,9 @@ export const projectComments = [
 ];
 
 export const usabilityVideos = [
-  { caption: "Fee version 1 tested amongst 10 groups", author: "Adrian", duration: "00:34", tint: "#e2e8f0" },
-  { caption: "Checkout flow walkthrough — first-time users", author: "Sarah", duration: "01:12", tint: "#dfe6f0" },
-  { caption: "Above-the-fold CTA placement A/B run", author: "Priya", duration: "00:48", tint: "#e9e2f3" },
-  { caption: "Mobile payment flow — think-aloud session", author: "David", duration: "02:05", tint: "#e2efe6" },
-  { caption: "Error recovery & validation messaging", author: "Alex", duration: "00:57", tint: "#f3ece2" },
-  { caption: "Screen-reader accessibility pass", author: "Marcus", duration: "01:33", tint: "#e2eef3" },
+  { caption: "Fee version 1 tested amongst 10 groups", author: "Adrian", duration: "00:34", image: usabImg1, tag: "Usability", tag2: "V1 Testing" },
+  { caption: "First time users' checkout flow", author: "Sarah", duration: "01:12", image: usabImg2, tag: "Walkthrough", tag2: "First-time" },
+  { caption: "Above-the-fold CTA placement A/B run", author: "Priya", duration: "00:48", image: usabImg3, tag: "A/B Test", tag2: "CTA Placement" },
 ];
 
 export const chatThread = {
@@ -394,10 +404,12 @@ export const responseSources = [
     category: "Research",
     kind: "video",
     eyebrow: "Usability Testing",
-    sub: "#4 Study",
     duration: "00:34",
     caption: "Fee version 1 tested amongst 10 groups",
     author: "Adrian",
+    image: usabImg1,
+    tag: "Usability",
+    tag2: "V1 Testing",
     details: [
       "10 moderated sessions, 5–7 min each.",
       "7 of 10 users missed the CTA in the original layout.",
@@ -409,7 +421,6 @@ export const responseSources = [
     category: "Research",
     kind: "chart",
     eyebrow: "Feedback Analysis",
-    sub: "#11 Study",
     title: "Customer feedback analysis - Q2",
     desc: "Analysis of incoming feedback from customers and partners during April–June 2026 across in-app feedback, support, and sales calls. Most feedback came in from customer support and in-app feedback.",
     segments: [
@@ -449,12 +460,12 @@ export const graphNodes = [
 ];
 
 export const knowledgeTypes = [
-  { key: "decision", label: "Decision", icon: "🧭", desc: "A design choice with rationale" },
-  { key: "research", label: "Research", icon: "🔬", desc: "A study, test, or interview" },
-  { key: "feedback", label: "Feedback", icon: "💬", desc: "User or stakeholder input" },
-  { key: "metric", label: "Metric", icon: "📈", desc: "A measured outcome" },
-  { key: "guideline", label: "Guideline", icon: "📐", desc: "A reusable design standard" },
-  { key: "meeting", label: "Meeting Notes", icon: "📝", desc: "Summary of a discussion" },
+  { key: "decision", label: "Design Decision", icon: "🧭", desc: "Design choices with rationale ('know-why')." },
+  { key: "research", label: "Research Insight", icon: "🔬", desc: "Findings from research, tests, or analytics." },
+  { key: "guideline", label: "Guideline", icon: "📐", desc: "Reusable principles, patterns, or standards." },
+  { key: "evidence", label: "Evidence", icon: "📊", desc: "Data, metrics, or validation results supporting decisions." },
+  { key: "documentation", label: "Project Documentation", icon: "📄", desc: "Raw artefacts like notes, workshops, or specs." },
+  { key: "private", label: "Private Notes", icon: "🔒", desc: "Personal thoughts or early ideas not ready to share." },
 ];
 
 export const onboarding = {

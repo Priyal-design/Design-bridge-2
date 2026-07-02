@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { chatThread, responseSources, sourceTabs } from "../data";
-import { IconArrow, IconPlay, IconLink } from "../components/Icons";
+import { IconArrow, IconLink } from "../components/Icons";
 import MagicWand from "../components/MagicWand";
+import SourceCard from "../components/SourceCard";
 
 function ConfRing({ value }) {
   const r = 24, c = 2 * Math.PI * r;
@@ -21,98 +22,13 @@ function ConfRing({ value }) {
   );
 }
 
-// Stacked donut chart for the feedback-analysis source card.
-function Donut({ segments }) {
-  const total = segments.reduce((s, x) => s + x.value, 0) || 1;
-  const r = 38, c = 2 * Math.PI * r;
-  let acc = 0;
-  return (
-    <svg width="120" height="120" viewBox="0 0 100 100" style={{ transform: "rotate(-90deg)" }}>
-      <circle cx="50" cy="50" r={r} fill="none" stroke="var(--panel-3)" strokeWidth="12" />
-      {segments.map((seg) => {
-        const len = (seg.value / total) * c;
-        const dash = `${len} ${c - len}`;
-        const off = -acc;
-        acc += len;
-        return (
-          <circle key={seg.label} cx="50" cy="50" r={r} fill="none"
-            stroke={seg.color} strokeWidth="12"
-            strokeDasharray={dash} strokeDashoffset={off} />
-        );
-      })}
-    </svg>
-  );
-}
-
-function SourceCard({ src }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="src-card">
-      <div className="src-eyebrow">{src.eyebrow}</div>
-
-      {src.kind === "figma" && (
-        <>
-          <div className="row between" style={{ alignItems: "center", marginTop: 6 }}>
-            <strong style={{ fontSize: 16 }}>{src.title}</strong>
-            <span className="badge badge-green">{src.badge}</span>
-          </div>
-          {src.image
-            ? <img src={src.image} alt={src.title} className="src-thumb src-thumb-img" />
-            : (
-              <div className="src-thumb src-thumb-figma">
-                {[...Array(8)].map((_, i) => <span key={i} className="frame-chip" />)}
-              </div>
-            )}
-        </>
-      )}
-
-      {src.kind === "video" && (
-        <>
-          <div className="src-sub">{src.sub}</div>
-          <div className="src-video">
-            <button className="src-play"><span style={{ width: 20, height: 20 }}><IconPlay /></span></button>
-            <span className="src-duration">{src.duration}</span>
-          </div>
-          <div className="src-caption">{src.caption}</div>
-          <div className="faint" style={{ fontSize: 12.5 }}>{src.author}</div>
-        </>
-      )}
-
-      {src.kind === "chart" && (
-        <>
-          <div className="src-sub">{src.sub}</div>
-          <div style={{ display: "grid", placeItems: "center", padding: "8px 0 4px" }}>
-            <Donut segments={src.segments} />
-          </div>
-          <strong style={{ fontSize: 15 }}>{src.title}</strong>
-          <p className="faint" style={{ fontSize: 12.5, lineHeight: 1.55, marginTop: 6 }}>{src.desc}</p>
-        </>
-      )}
-
-      {open && src.details && (
-        <div className="src-details">
-          {src.details.map((d) => (
-            <div key={d} className="list-item">
-              <span className="list-bullet" style={{ background: "var(--accent)" }} />
-              <span style={{ fontSize: 12.5 }}>{d}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <button className="src-more" onClick={() => setOpen((o) => !o)}>
-        {open ? "Show less" : "Show more"}
-      </button>
-    </div>
-  );
-}
-
 export default function Chat() {
   const [asked, setAsked] = useState(true);
   const [thinking, setThinking] = useState(false);
   const [input, setInput] = useState("");
   const [tab, setTab] = useState("All");
-  const [showSources, setShowSources] = useState(false);
+  const location = useLocation();
+  const [showSources, setShowSources] = useState(location.state?.openSources ?? false);
 
   const ask = () => {
     setThinking(true);
@@ -129,6 +45,7 @@ export default function Chat() {
   const shown = tab === "All" ? responseSources : responseSources.filter((s) => s.category === tab);
 
   return (
+    <>
     <div className={"page chat-layout" + (showSources ? " with-sources" : "")}>
       {/* ---------- Conversation ---------- */}
       <div className="chat-col">
@@ -209,6 +126,8 @@ export default function Chat() {
         )}
       </div>
 
+      </div>
+
       {/* ---------- Response Sources rail ---------- */}
       {showSources && (
       <aside className="sources-panel">
@@ -242,6 +161,6 @@ export default function Chat() {
         </div>
       </aside>
       )}
-    </div>
+    </>
   );
 }

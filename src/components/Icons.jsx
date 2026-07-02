@@ -39,6 +39,8 @@ export const IconGauge = wrap(<><path d="M4 14a8 8 0 1 1 16 0" /><path d="M12 14
 export const IconBolt = wrap(<><path d="M13 2 4 14h7l-1 8 9-12h-7z" /></>);
 export const IconClose = wrap(<><path d="M6 6l12 12M18 6 6 18" /></>);
 export const IconStar = wrap(<><path d="m12 3 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 18.6 6.8 19.2l1-5.8L3.5 9.2l5.9-.9z" /></>);
+export const IconRuler = wrap(<><rect x="3" y="9" width="18" height="8" rx="1.5" /><path d="M6 9v4M9 9v2M12 9v4M15 9v2M18 9v4" strokeWidth="1.5" /></>);
+export const IconLock = wrap(<><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></>);
 export const IconFilter = wrap(<><path d="M3 5h18l-7 8v6l-4-2v-4z" /></>);
 export const IconUserPlus = wrap(<><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M19 8v6M22 11h-6" /></>);
 export const IconUser = wrap(<><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></>);

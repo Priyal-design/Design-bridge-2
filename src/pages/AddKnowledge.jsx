@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { knowledgeTypes } from "../data";
-import { IconCheck, IconArrow, IconSparkle, IconLink, IconPlay, IconClose } from "../components/Icons";
+import { IconCheck, IconArrow, IconSparkle, IconLink, IconPlay, IconClose, IconDecision, IconGraph, IconRuler, IconGauge, IconProject, IconLock } from "../components/Icons";
 import Lottie from "../components/Lottie";
 import published from "../assets/published.json";
+import feeMgt from "../images/Feemgt2.jpg";
+import photoAsset from "../images/Sameness in design UI.jpeg";
+import microscopeConfig from "../images/microscopy.png";
 
 const steps = ["Choose", "Details", "Publish"];
 
@@ -11,10 +14,19 @@ const steps = ["Choose", "Details", "Publish"];
 const suggestedTags = ["cta", "accessibility", "conversion", "above-the-fold", "checkout", "usability", "mobile", "heatmap"];
 
 const relatedProjects = [
-  { id: "fee-management", name: "Fee Management System", dept: "Finance", updated: "3 days ago", desc: "Shares the checkout CTA pattern and above-the-fold action study.", color: "#007AFF" },
-  { id: "photo-asset", name: "Photo Asset Management", dept: "Photography", updated: "1 week ago", desc: "Referenced the same heatmap method to validate the primary action.", color: "#AF52DE" },
-  { id: "microscope-config", name: "Microscope Configuration Portal", dept: "Microscopy", updated: "2 weeks ago", desc: "Similar layout reshuffle to surface the key task above the fold.", color: "#34C759" },
+  { id: "fee-management", name: "Fee Management System", dept: "Finance", updated: "3 days ago", desc: "Shares the checkout CTA pattern and above-the-fold action study.", color: "#007AFF", image: feeMgt },
+  { id: "photo-asset", name: "Photo Asset Management", dept: "Photography", updated: "1 week ago", desc: "Referenced the same heatmap method to validate the primary action.", color: "#AF52DE", image: photoAsset },
+  { id: "microscope-config", name: "Microscope Configuration Portal", dept: "Microscopy", updated: "2 weeks ago", desc: "Similar layout reshuffle to surface the key task above the fold.", color: "#34C759", image: microscopeConfig },
 ];
+
+const typeIcons = {
+  decision: IconDecision,
+  research: IconGraph,
+  guideline: IconRuler,
+  evidence: IconGauge,
+  documentation: IconProject,
+  private: IconLock,
+};
 
 export default function AddKnowledge() {
   const [step, setStep] = useState(0);
@@ -54,7 +66,7 @@ export default function AddKnowledge() {
           <div className="type-grid">
             {knowledgeTypes.map((t) => (
               <div key={t.key} className={"type-card" + (type === t.key ? " sel" : "")} onClick={() => setType(t.key)}>
-                <div className="type-ic">{t.icon}</div>
+                <div className="type-ic">{(() => { const Ic = typeIcons[t.key]; return Ic ? <Ic /> : t.icon; })()}</div>
                 <div style={{ fontWeight: 700, fontSize: 15 }}>{t.label}</div>
                 <div className="type-desc" style={{ fontSize: 12.5, marginTop: 4 }}>{t.desc}</div>
               </div>
@@ -75,7 +87,7 @@ export default function AddKnowledge() {
                 <select defaultValue="Finance"><option>Finance</option><option>Microscopy</option><option>Photography</option><option>Medical</option></select>
               </div>
               <div className="field"><label>Category</label>
-                <select defaultValue="Decision"><option>Decision</option><option>Research</option><option>Guideline</option><option>Metric</option></select>
+                <select defaultValue="Design Decision"><option>Design Decision</option><option>Research Insight</option><option>Guideline</option><option>Evidence</option><option>Project Documentation</option></select>
               </div>
             </div>
             <div className="field"><label>Authors</label><input placeholder="Add contributors" defaultValue="Alex Kim, Priya Sharma" /></div>
@@ -152,13 +164,7 @@ export default function AddKnowledge() {
                   <div key={p.name} className={"linkproj-row" + (on ? " on" : "")}>
                     {/* UI screen of the project */}
                     <div className="linkproj-screen" style={{ "--sc": p.color }}>
-                      <div className="sc-bar"><span /><span /><span /></div>
-                      <div className="sc-body">
-                        <div className="sc-line w70" />
-                        <div className="sc-block" />
-                        <div className="sc-line w50" />
-                        <div className="sc-line w40" />
-                      </div>
+                      <img src={p.image} alt={p.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     </div>
                     {/* Header + info */}
                     <div className="linkproj-info">

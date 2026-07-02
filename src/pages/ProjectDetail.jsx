@@ -51,8 +51,9 @@ export default function ProjectDetail() {
   const { id } = useParams();
   const project = projects.find((p) => p.id === id) || projects[0];
   const color = departmentColors[project.department];
+  const files = figmaFiles[id] || figmaFiles["fee-management"];
 
-  const USAB_PREVIEW = 2;
+  const USAB_PREVIEW = 1;
   const [showAllUsab, setShowAllUsab] = useState(false);
   const visibleUsab = showAllUsab ? usabilityVideos : usabilityVideos.slice(0, USAB_PREVIEW);
 
@@ -175,16 +176,16 @@ export default function ProjectDetail() {
                 <span className="list-bullet" style={{ background: "var(--accent)" }} />
                 <span>{t}</span>
               </div>
-            ))}
+              ))}
           </div>
-        </div>
+          </div>
 
         {/* ---------- Center column ---------- */}
         <div className="col gap20">
           {/* Figma File */}
           <div className="card">
             <div className="section-title">Figma File</div>
-            {figmaFiles.map((f) => (
+            {files.map((f) => (
               <a key={f.name} href={f.url} target="_blank" rel="noopener noreferrer" className="figma-file" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
                 <div className="row between" style={{ alignItems: "center", marginBottom: 12 }}>
                   <div style={{ fontSize: 16, fontWeight: 700 }}>{f.name}</div>
@@ -199,13 +200,7 @@ export default function ProjectDetail() {
 
           {/* Feedback Analysis */}
           <div className="card">
-            <div className="row gap10" style={{ alignItems: "center" }}>
-              <span className="fa-ic" />
-              <div>
-                <div className="section-title" style={{ margin: 0 }}>{feedbackAnalysis.eyebrow}</div>
-                <div style={{ fontSize: 13.5, fontWeight: 700 }}>{feedbackAnalysis.study}</div>
-              </div>
-            </div>
+            <div className="section-title" style={{ margin: 0 }}>{feedbackAnalysis.eyebrow}</div>
             <div className="fa-body mt20">
               <div className="fa-chart">
                 <Donut segments={feedbackAnalysis.segments} />
@@ -333,23 +328,33 @@ export default function ProjectDetail() {
           {/* Usability Testing */}
           <div className="card">
             <div className="section-title">Usability Testing</div>
-            <div style={{ fontSize: 13.5, fontWeight: 700, marginBottom: 16 }}>#4 Study</div>
-            <div className="col gap20">
+            <div className="col" style={{ gap: 24 }}>
               {visibleUsab.map((v, i) => (
                 <div key={i}>
-                  <div className="usab-video" style={{ background: v.tint }}>
+                  <div className="usab-video" style={{ background: `url(${v.image}) center/cover no-repeat` }}>
                     <span className="usab-play"><span style={{ width: 16, height: 16 }}><IconPlay /></span></span>
                     <span className="usab-dur">{v.duration}</span>
                   </div>
-                  <div className="usab-cap">{v.caption}</div>
-                  <div className="faint" style={{ fontSize: 12, marginTop: 8 }}>{v.author}</div>
+                  <div className="usab-cap">
+                    <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 8 }}>{v.caption}</div>
+                    <div className="row between" style={{ alignItems: "center" }}>
+                      <div className="row" style={{ gap: 4 }}>
+                        <span className="tag" style={{ fontSize: 11, padding: "3px 9px" }}>{v.tag}</span>
+                        <span className="tag" style={{ fontSize: 11, padding: "3px 9px" }}>{v.tag2}</span>
+                      </div>
+                      <span className="stack-av" style={{ background: (contributors.find(c => c.name.startsWith(v.author)) || {}).color || "#888", width: 26, height: 26, fontSize: 10, marginLeft: 0 }}>
+                        {v.author[0]}
+                        <span className="av-tip">{v.author}</span>
+                      </span>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
             {usabilityVideos.length > USAB_PREVIEW && (
               <button
                 className="btn btn-ghost btn-sm"
-                style={{ margin: "20px auto 0", display: "flex" }}
+                style={{ margin: "16px auto 0", display: "flex" }}
                 onClick={() => setShowAllUsab((s) => !s)}
               >
                 {showAllUsab ? "Show less" : `Show more (${usabilityVideos.length - USAB_PREVIEW})`}
