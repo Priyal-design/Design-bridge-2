@@ -28,7 +28,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/figma" element={<FigmaPlugin />} />
         <Route path="/dashboard" element={<Shell><Dashboard /></Shell>} />
         <Route path="/hub" element={<Shell><KnowledgeHub /></Shell>} />
