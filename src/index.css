@@ -255,6 +255,15 @@ input, textarea, select { font-family: inherit; }
   min-height: 100vh;
 }
 
+@media (min-width: 1024px) {
+  .app {
+    transform: scale(0.9);
+    transform-origin: top left;
+    width: 111.111%;
+    min-height: 111.111vh;
+  }
+}
+
 .sidebar {
   position: sticky;
   top: 0;
