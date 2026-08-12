@@ -97,9 +97,9 @@ export default function Layout({ children }) {
 
         <div className="sidebar-footer">
           <div className="user-chip">
-            <div className="avatar" style={{ background: "linear-gradient(180deg, #e056c8, #b3309e)" }}>AB</div>
+            <div className="avatar" style={{ background: "linear-gradient(180deg, #e056c8, #b3309e)" }}>PS</div>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 13.5, fontWeight: 600 }}>Ananya B</div>
+              <div style={{ fontSize: 13.5, fontWeight: 600 }}>Priyal Shah</div>
               <div style={{ fontSize: 11.5, color: "var(--text-faint)" }}>Product Designer</div>
             </div>
           </div>
