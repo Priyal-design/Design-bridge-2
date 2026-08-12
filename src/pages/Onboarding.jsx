@@ -123,7 +123,7 @@ export default function Onboarding() {
       related: "Validation milestone",
     },
     you: {
-      name: "Priyal Shah",
+      name: "Ananya B",
       role: "Product Designer",
       area: "Checkout experience",
       color: "#e056c8",
@@ -190,7 +190,7 @@ export default function Onboarding() {
       related: "Validation milestone",
     };
     const youPerson = {
-      name: "Priyal Shah",
+      name: "Ananya B",
       role: "Product Designer",
       area: "Checkout experience",
       color: "#e056c8",
@@ -276,7 +276,7 @@ export default function Onboarding() {
 
         <div className="onb-hero-content">
           <div className="onb-hero-badge">Private & Personalised</div>
-          <h2>Priyal’s Space</h2>
+          <h2>Ananya B’s Space</h2>
           <p>
             You’re a Product Designer in Core Experiences, currently supporting the <a href="https://design-bridge-2.vercel.app/projects/fee-management/chapters" className="onb-hero-project-link">Fee Management System</a> during validation. Your focus is the checkout experience, and Alex Kim is your primary design contact.
           </p>
@@ -421,7 +421,7 @@ export default function Onboarding() {
               </div>
               <div className="onb-people-map-line under-design" />
               <div className="onb-people-under-design">
-                <button type="button" className="onb-people-node you" onClick={() => openPerson(mainPeople.you)}><span className="onb-person-avatar" style={{ background: "#e056c8" }}>PS</span><strong>Priyal Shah</strong><small>You · Checkout experience</small></button>
+                <button type="button" className="onb-people-node you" onClick={() => openPerson(mainPeople.you)}><span className="onb-person-avatar" style={{ background: "#e056c8" }}>AB</span><strong>Ananya B</strong><small>You · Checkout experience</small></button>
               </div>
             </div>
           </div>
