@@ -27,7 +27,7 @@ const startHereCards = [
     title: "Understand the project",
     text: "Get the essential context behind the Fee Management System and its current direction.",
     cta: "View project overview",
-    to: "/projects/fee-management/chapters?tab=overview",
+    to: "/projects/fee-management/chapters",
   },
   {
     title: "Decisions you should know",
@@ -45,7 +45,7 @@ const startHereCards = [
 
 const whatChanged = [
   ["CTA placement decision updated", "2h ago", "/projects/fee-management/decisions"],
-  ["Accessibility testing moved", "Yesterday", "/projects/fee-management/chapters?tab=overview"],
+  ["Accessibility testing moved", "Yesterday", "/projects/fee-management/chapters"],
   ["3 checkout prototypes added", "1d ago", "/figma"],
 ];
 
@@ -278,7 +278,7 @@ export default function Onboarding() {
           <div className="onb-hero-badge">Private & Personalised</div>
           <h2>Priyal’s Space</h2>
           <p>
-            You’re a Product Designer in Core Experiences, currently supporting the <Link to="/projects/fee-management/chapters?tab=overview" className="onb-hero-project-link">Fee Management System</Link> during validation. Your focus is the checkout experience, and Alex Kim is your primary design contact.
+            You’re a Product Designer in Core Experiences, currently supporting the <Link to="/projects/fee-management/chapters" className="onb-hero-project-link">Fee Management System</Link> during validation. Your focus is the checkout experience, and Alex Kim is your primary design contact.
           </p>
         </div>
 
@@ -338,7 +338,7 @@ export default function Onboarding() {
               </Link>
             ))}
           </div>
-          <Link to="/projects/fee-management/chapters?tab=overview" className="onb-text-link">View all updates <IconArrow /></Link>
+          <Link to="/projects/fee-management/chapters" className="onb-text-link">View all updates <IconArrow /></Link>
         </section>
 
         <section className="card onb-section onb-next-section">
