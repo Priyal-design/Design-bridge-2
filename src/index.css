@@ -564,7 +564,14 @@ input, textarea, select { font-family: inherit; }
   .knowledge-story-chain div > svg { position: static; transform: rotate(90deg); margin-top: 12px; }
 }
 
-.sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
+.sidebar-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
 .user-chip {
   display: flex; align-items: center; gap: 10px; padding: 9px;
   border-radius: var(--radius-sm);
