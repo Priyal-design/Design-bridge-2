@@ -1,19 +1,58 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { chatThread, knowledgeTypes } from "../data";
-import { IconClose, IconSparkle, IconArrow, IconCheck, IconLink, IconPlay, IconDecision, IconGraph, IconRuler, IconGauge, IconProject, IconLock } from "../components/Icons";
-import MagicWand from "../components/MagicWand";
+import { IconClose, IconSparkle, IconArrow, IconCheck, IconLink, IconPlay, IconPlus, IconDecision, IconGraph, IconRuler, IconGauge, IconFile, IconLock } from "../components/Icons";
 import Lottie from "../components/Lottie";
 import published from "../assets/published.json";
+import magicWand from "../assets/magic-wand.json";
 import Wordmark from "../components/Wordmark";
+import yodaMain from "../assets/yoda-main.svg";
+import yodaGlasses from "../assets/yoda-glasses.svg";
 
-const suggestedTags = ["cta", "accessibility", "conversion", "above-the-fold", "checkout", "usability", "mobile", "heatmap"];
-const addSteps = ["Choose", "Details", "Publish"];
+const addSteps = ["Choose", "Context", "Add Info", "Generated Info"];
+const suggestedTagsByType = {
+  decision: ["design-rationale", "cta", "usability", "conversion", "checkout"],
+  research: ["research-insight", "user-feedback", "synthesis", "usability-testing"],
+  guideline: ["guideline", "accessibility", "design-system", "interaction-pattern"],
+  evidence: ["evidence", "validation", "analytics", "source-linked"],
+  documentation: ["documentation", "handover", "onboarding", "project-context"],
+  private: ["private-note", "draft"],
+};
+
+const contextOptions = {
+  project: ["Fee Management System", "Photo Asset Management", "Microscope Configuration Portal"],
+  department: ["Finance", "Microscopy", "Photography", "Medical", "Other"],
+  audience: ["Internal design team", "New project members", "Product and engineering", "Stakeholders", "All employees"],
+  designer: ["Priyal Shah", "Alex Kim", "Priya Sharma", "Sarah Lee", "David Chen", "Adrian", "Marcus"],
+};
+
+function dateToInput(display) {
+  const date = new Date(display);
+  if (Number.isNaN(date.getTime())) return new Date().toISOString().split("T")[0];
+  return date.toISOString().split("T")[0];
+}
+
+const typeActions = {
+  decision: "I made a design decision",
+  research: "I found a research insight",
+  guideline: "I created or updated a guideline",
+  evidence: "I want to attach evidence",
+  documentation: "I want to document project context",
+  private: "I want to save a private note",
+};
+
+const pluginStructure = [
+  ["problem", "Context / problem", "What situation or problem led to this decision?", "Users were not reliably noticing the primary action in the existing layout."],
+  ["alternatives", "Alternatives", "What alternatives did the team consider?", "The team considered a sticky action and moving the CTA into the hero area."],
+  ["decision", "Decision made", "What was decided?", "Place the primary CTA above the fold within the hero area."],
+  ["rationale", "Rationale", "Why was this chosen over the alternatives?", "This improved discoverability while keeping the interaction familiar and visible in context."],
+  ["consequences", "Consequences", "What trade-offs or risks come with it?", "The layout becomes denser and should be checked across smaller screens and content variants."],
+];
 
 const relatedProjects = [
   { id: "fee-management", name: "Fee Management System", dept: "Finance", updated: "3 days ago", desc: "Shares the checkout CTA pattern and above-the-fold action study.", color: "#007AFF" },
   { id: "photo-asset", name: "Photo Asset Management", dept: "Photography", updated: "1 week ago", desc: "Referenced the same heatmap method to validate the primary action.", color: "#AF52DE" },
-  { id: "microscope-config", name: "Microscope Configuration Portal", dept: "Microscopy", updated: "2 weeks ago", desc: "Similar layout reshuffle to surface the key task above the fold.", color: "#34C759" },
+  { id: "microscope-config", name: "Microscope Configuration Portal", dept: "Microscopy", updated: "2 weeks ago", desc: "Similar layout change to surface the key task above the fold.", color: "#34C759" },
 ];
 
 const typeIcons = {
@@ -21,7 +60,7 @@ const typeIcons = {
   research: IconGraph,
   guideline: IconRuler,
   evidence: IconGauge,
-  documentation: IconProject,
+  documentation: IconFile,
   private: IconLock,
 };
 
@@ -65,17 +104,21 @@ function PluginAsk() {
       )}
 
       {answered && (
-        <div className="ai-result-card">
+        <div className="ai-result-card plugin-jedi-answer">
           <div className="row between mb12" style={{ alignItems: "center" }}>
             <div className="row gap8" style={{ alignItems: "center" }}>
-              <MagicWand size={30} />
-              <strong style={{ fontSize: 14 }}>Design Bridge</strong>
+              <img className="plugin-jedi-avatar" src={yodaMain} alt="" />
+              <strong style={{ fontSize: 16 }}>Jedi thinks</strong>
             </div>
             <ConfRing value={chatThread.confidence} />
           </div>
 
           <div className="badge badge-violet mb8">Decision Insights</div>
-          <p style={{ fontSize: 13.5, lineHeight: 1.6, marginBottom: 12 }}>{chatThread.answer[0]}</p>
+          <div className="figma-ask-citation-trail">
+            <p>Users failed to notice the CTA in the previous location.<Link to="/chat?openSources=true&activeClaimId=claim-1" state={{ openSources: true, activeClaimId: "claim-1" }} className="figma-citation-link">[1]</Link></p>
+            <p>Heatmap analysis and usability testing demonstrated significantly higher visibility above the fold.<Link to="/chat?openSources=true&activeClaimId=claim-2" state={{ openSources: true, activeClaimId: "claim-2" }} className="figma-citation-link">[2]</Link></p>
+            <p>Our team has documented this extensively, and I've pulled together insights from design files, research studies, and decision logs.<Link to="/chat?openSources=true&activeClaimId=claim-5" state={{ openSources: true, activeClaimId: "claim-5" }} className="figma-citation-link">[3]</Link></p>
+          </div>
 
           <div className="faint" style={{ fontSize: 11.5, marginBottom: 6 }}>Metrics</div>
           <div className="row gap10 mb12 wrap">
@@ -90,27 +133,19 @@ function PluginAsk() {
               </div>
             ))}
           </div>
-
-          <div className="faint" style={{ fontSize: 11.5, marginBottom: 6 }}>Evidence found</div>
-          <div className="row gap8 wrap">
-            {chatThread.evidence.map((e) => (
-              <span key={e.title} className="tag">{e.icon} {e.title}</span>
-            ))}
-          </div>
-
-          <Link to="/chat" state={{ openSources: true }} className="btn btn-ghost btn-sm open-sources-btn">
+          <Link to="/chat?openSources=true&activeClaimId=claim-1" state={{ openSources: true, activeClaimId: "claim-1" }} className="btn btn-ghost btn-sm open-sources-btn">
             <span style={{ width: 15, height: 15 }}><IconLink /></span>
             Open Sources
           </Link>
         </div>
       )}
 
-      <div className="ai-input mt16">
+      <div className="ai-input plugin-jedi-input mt16">
         <input value={input} onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && ask()}
-          placeholder="Ask about the selection…" />
+          placeholder="Ask Jedi about the selected frame…" />
         <button className="btn btn-primary btn-sm" onClick={ask}>
-          <span style={{ width: 14, height: 14 }}><IconSparkle /></span>
+          Send <span style={{ width: 14, height: 14 }}><IconArrow /></span>
         </button>
       </div>
 
@@ -131,21 +166,69 @@ function PluginAsk() {
 // ----- Add Knowledge tab — same multi-step process as the /add page -----
 function PluginAdd() {
   const [step, setStep] = useState(0);
-  const [type, setType] = useState("decision");
-  const [tags, setTags] = useState(["cta", "accessibility"]);
+  const [type, setType] = useState("");
+  const [tags, setTags] = useState([]);
   const [linked, setLinked] = useState({ "Fee Management System": true });
   const [linkModal, setLinkModal] = useState(null);
   const [linkReason, setLinkReason] = useState("");
+  const [generated, setGenerated] = useState(false);
+  const [generatingInfo, setGeneratingInfo] = useState(false);
+  const [description, setDescription] = useState("");
+  const [editingContext, setEditingContext] = useState(false);
+  const [editingGenerated, setEditingGenerated] = useState(false);
+  const [context, setContext] = useState({
+    project: "Fee Management System",
+    department: "Finance",
+    audience: "Internal design team",
+    source: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+    figmaUrl: "https://www.figma.com/file/CTA-hero-layout-v2",
+    designer: "Priyal Shah",
+  });
 
   const toggleTag = (t) => setTags((p) => (p.includes(t) ? p.filter((x) => x !== t) : [...p, t]));
+  const selectedType = knowledgeTypes.find((item) => item.key === type);
+  const isPrivate = type === "private";
+  const trimmedDescription = description.trim();
+  const typedLineCount = trimmedDescription ? trimmedDescription.split("\n").filter((line) => line.trim()).length : 0;
+  const estimatedWrappedLines = trimmedDescription ? Math.ceil(trimmedDescription.length / 90) : 0;
+  const lineCount = Math.max(typedLineCount, estimatedWrappedLines);
+  const quality = lineCount >= 2 ? "Excellent" : lineCount >= 1 ? "Average" : "Needs context";
+  const qualityClass = quality === "Excellent" ? "green" : quality === "Average" ? "yellow" : "red";
+  const contextFields = [
+    ["project", "Project"],
+    ["department", "Department"],
+    ["audience", "Intended for"],
+    ["source", "Date"],
+    ["figmaUrl", "Figma URL"],
+    ["designer", "Captured by"],
+  ];
+
+  const switchType = (nextType) => {
+    setType(nextType);
+    setTags(suggestedTagsByType[nextType].slice(0, 3));
+    setGenerated(false);
+    setGeneratingInfo(false);
+    setDescription("");
+  };
+
+  function generateInfo() {
+    setStep(3);
+    setGenerated(false);
+    setEditingGenerated(false);
+    setGeneratingInfo(true);
+    window.setTimeout(() => {
+      setGeneratingInfo(false);
+      setGenerated(true);
+    }, 3000);
+  }
 
   return (
-    <div>
+    <div className="figma-add-flow">
       {/* Step rail */}
-      <div className="steps-rail" style={{ marginBottom: 20 }}>
+      <div className="steps-rail figma-steps-rail">
         {addSteps.map((s, i) => (
           <div key={s} className="step-pill" style={{ flex: i < addSteps.length - 1 ? 1 : "none" }}>
-            <div className={"step-circle " + (i < step ? "done" : i === step ? "active" : "")} style={{ width: 28, height: 28, fontSize: 12 }}>
+            <div className={"step-circle " + (i < Math.min(step, addSteps.length) ? "done" : i === step ? "active" : "")} style={{ width: 28, height: 28, fontSize: 12 }}>
               {i < step ? <span style={{ width: 14, height: 14 }}><IconCheck /></span> : i + 1}
             </div>
             <span className="step-label" style={{ fontSize: 12, color: i === step ? "var(--text)" : "var(--text-faint)" }}>{s}</span>
@@ -160,100 +243,161 @@ function PluginAdd() {
           <div className="faint mb12" style={{ fontSize: 12.5 }}>What are you capturing?</div>
           <div className="type-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)", gap: 24 }}>
             {knowledgeTypes.map((t) => (
-              <div key={t.key} className={"type-card" + (type === t.key ? " sel" : "")} style={{ padding: "14px 12px", height: 148 }} onClick={() => setType(t.key)}>
-                <div className="type-ic" style={{ width: 36, height: 36, marginBottom: 8 }}>{(() => { const Ic = typeIcons[t.key]; return Ic ? <Ic /> : t.icon; })()}</div>
-                <div style={{ fontWeight: 700, fontSize: 13 }}>{t.label}</div>
+              <button type="button" key={t.key} className={"type-card" + (type === t.key ? " sel" : "")} style={{ padding: "14px 12px", minHeight: 148 }} onClick={() => switchType(t.key)}>
+                <div className={"type-ic type-ic--" + t.key} style={{ width: 36, height: 36, marginBottom: 8 }}>{(() => { const Ic = typeIcons[t.key]; return Ic ? <Ic /> : t.icon; })()}</div>
+                <div style={{ fontWeight: 700, fontSize: 13 }}>{typeActions[t.key]}</div>
                 <div className="type-desc" style={{ fontSize: 11, marginTop: 4 }}>{t.desc}</div>
-              </div>
+              </button>
             ))}
           </div>
         </>
       )}
 
-      {/* Step 2 — Details */}
+      {/* Step 2 — Pre-existing context */}
       {step === 1 && (
-        <>
-          <div className="field"><label>Title</label><input placeholder="e.g. Move CTA above the fold" defaultValue="Move CTA Above Fold" /></div>
-          <div className="field"><label>Description</label><textarea rows="3" placeholder="Describe the knowledge…" defaultValue="Users overlooked the payment action in the prior layout." /></div>
-          <div className="field-row">
-            <div className="field"><label>Department</label>
-              <select defaultValue="Finance"><option>Finance</option><option>Microscopy</option><option>Photography</option><option>Medical</option></select>
+          <div className="figma-details-ui">
+          <div className={"context-known-card figma-context-known" + (editingContext ? " editing" : "")}>
+            <div className="context-known-head">
+              <div className="context-known-title-wrap">
+                {isPrivate ? <span className="context-known-icon"><IconLock /></span> : null}
+                <div>
+                    <h3>{isPrivate ? "Private workspace context" : "Context Jedi knows"}</h3>
+                  <p>{isPrivate ? "This stays visible only to you." : "Information based on the frame you have selected"}</p>
+                </div>
+                </div>
+              <div className="context-known-actions"><button type="button" className="btn btn-ghost btn-sm"><IconPlus /> Sources</button><button type="button" className="btn btn-ghost btn-sm" onClick={() => setEditingContext((value) => !value)}>{editingContext ? "Done" : "Edit"}</button></div>
             </div>
-            <div className="field"><label>Category</label>
-              <select defaultValue="Decision"><option>Decision</option><option>Research</option><option>Guideline</option><option>Metric</option></select>
-            </div>
-          </div>
-          <div className="field"><label>Authors</label><input placeholder="Add contributors" defaultValue="Alex Kim, Priya Sharma" /></div>
-          <div className="field"><label>Target Audience</label>
-            <select defaultValue="">
-              <option value="" disabled>Select target audience</option>
-              <option>Students</option>
-              <option>Working Professionals</option>
-              <option>Elderly</option>
-              <option>All Clients and Businesses</option>
-            </select>
-          </div>
-          <div className="field-row">
-            <div className="field"><label>Source URL</label><input placeholder="https://" /></div>
-            <div className="field"><label>Figma Link</label><input placeholder="figma.com/file/…" /></div>
-          </div>
-          <div className="field"><label>Jira Link</label><input placeholder="jedi.atlassian.net/…" /></div>
-          <div className="field"><label>Files</label>
-            <div className="dropzone">📎 Drag &amp; drop files here, or <span style={{ color: "var(--accent)" }}>browse</span></div>
-          </div>
-          <div className="field" style={{ marginBottom: 0 }}><label>Tags</label>
-            <div className="tag-input-box">
-              {tags.length === 0 && <span className="tag-empty">No tags yet — pick from suggestions below.</span>}
-              {tags.map((t) => (
-                <span key={t} className="tag-chip">{t}
-                  <button type="button" className="tag-chip-x" aria-label={`Remove ${t}`} onClick={() => toggleTag(t)}>
-                    <span style={{ width: 12, height: 12, display: "grid" }}><IconClose /></span>
-                  </button>
-                </span>
+            <div className="context-known-grid figma-context-grid">
+              {contextFields.map(([name, label]) => (
+                <div className="context-known-item" key={name}>
+                  <span>{label}</span>
+                  {editingContext ? (
+                    name === "source" ? (
+                      <input type="date" value={dateToInput(context.source)} onChange={(event) => {
+                        const date = new Date(event.target.value + "T00:00:00");
+                        setContext((previous) => ({ ...previous, source: date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) }));
+                      }} />
+                    ) : name === "figmaUrl" ? (
+                      <input type="text" value={context.figmaUrl} onChange={(event) => setContext((previous) => ({ ...previous, figmaUrl: event.target.value }))} />
+                    ) : (
+                      <select value={context[name]} onChange={(event) => setContext((previous) => ({ ...previous, [name]: event.target.value }))}>
+                        {contextOptions[name].map((option) => <option key={option}>{option}</option>)}
+                      </select>
+                    )
+                  ) : <strong>{context[name]}</strong>}
+                </div>
               ))}
             </div>
-            <div className="gen-tags">
-              <div className="gen-tags-head">
-                <span className="gen-tags-ic"><IconSparkle /></span>
-                <div>
-                  <div className="gen-tags-title">Generated tags</div>
-                  <div className="gen-tags-sub">Pick tags for the project</div>
-                </div>
+          </div>
+
+          {!isPrivate && (
+            <div className="figma-details-card figma-context-known figma-tags-card"><label>Prepared for retrieval</label>
+              <p className="faint" style={{ fontSize: 12, marginBottom: 12 }}>Jedi generated these tags from the selected knowledge type. Edit only when necessary.</p>
+              <div className="tag-input-box">
+                {tags.map((t) => (
+                  <span key={t} className="tag-chip">{t}<button type="button" className="tag-chip-x" aria-label={`Remove ${t}`} onClick={() => toggleTag(t)}><IconClose /></button></span>
+                ))}
               </div>
-              <div className="gen-tags-pills">
-                {suggestedTags.map((t) => {
-                  const on = tags.includes(t);
-                  return (
-                    <button type="button" key={t} className={"suggest-pill" + (on ? " on" : "")} onClick={() => toggleTag(t)}>
-                      <span className="sp-ic">{on ? <IconCheck /> : <span className="sp-plus">+</span>}</span>{t}
-                    </button>
-                  );
-                })}
+              <div className="generated-tag-options figma-generated-tags">
+                {(suggestedTagsByType[type] || []).filter((tag) => !tags.includes(tag)).map((tag) => (
+                  <button type="button" className="suggest-pill" key={tag} onClick={() => toggleTag(tag)}>+ {tag}</button>
+                ))}
               </div>
             </div>
-          </div>
-        </>
+          )}
+
+        </div>
       )}
 
-      {/* Step 3 — Published */}
+      {/* Step 3 — Add details */}
       {step === 2 && (
+        <div className="figma-add-details-layout private">
+          <div className="figma-details-card figma-capture-card">
+            <div className="figma-details-head">
+              <img src={yodaGlasses} alt="" className="figma-addinfo-avatar" />
+              <div>
+                <span>{selectedType?.label || "Knowledge"}</span>
+                <h3>{isPrivate ? "Private note" : "Jedi Knowledge Coach"}</h3>
+                {!isPrivate && <div className="figma-addinfo-quality"><span>Quality</span><strong className={"jrp-quality-badge " + qualityClass}>{quality}</strong></div>}
+              </div>
+            </div>
+            <p className="form-intro">{isPrivate ? "Add the content of your private note." : "Describe the knowledge in your own words. Jedi will structure it into reusable project context."}</p>
+
+            <div className="figma-details-grid">
+              <div className="field figma-details-full"><label>{isPrivate ? "Give your note a title" : "Give this knowledge a clear title"}</label><input placeholder={isPrivate ? "e.g. Thoughts on CTA placement" : "e.g. Move the primary CTA above the fold"} /></div>
+              <div className="field figma-details-full"><label>{isPrivate ? "Write whatever is on your mind" : "Describe what happened"}</label><textarea className="figma-description-textarea" rows="5" value={description} onChange={(event) => setDescription(event.target.value)} placeholder={isPrivate ? "This stays private. Jedi can help organize it when you're ready." : "e.g. Users were missing the payment CTA during testing, so we explored a sticky CTA and moving it above the fold. We chose the latter because it improved visibility."} /></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Step 4 — Generated info */}
+      {step === 3 && (
+        <div className="figma-add-details-layout private">
+          {!isPrivate ? (
+            <div className={"decision-understanding-card figma-generated-structure" + (generated ? "" : " empty") + (editingGenerated ? " editing" : "")}>
+              <div className="decision-understanding-head">
+                <div><span className="eyebrow"><IconSparkle /> Jedi structured your {selectedType?.label?.toLowerCase() || "knowledge"}</span><h3>Generated info</h3><p>{generatingInfo ? "Jedi is structuring your knowledge." : generated ? "Review and edit what will be stored." : "Generate details from the previous step to review the reusable structure."}</p></div>
+                {generated && <button type="button" className="btn btn-ghost btn-sm figma-generated-edit-btn" onClick={() => setEditingGenerated((value) => !value)}>{editingGenerated ? "Done" : "Edit"}</button>}
+              </div>
+              {generatingInfo ? (
+                <div className="decision-understanding-placeholder figma-structure-placeholder figma-generating-loader">
+                  <Lottie animationData={magicWand} size={92} />
+                  <strong>Jedi is working..</strong>
+                  <p>Turning your note into knowledge.</p>
+                </div>
+              ) : generated ? (
+                <div className="decision-understanding-grid figma-structure-grid">
+                  {pluginStructure.map(([key, label, prompt, text]) => (
+                    <label className="decision-structure-item" key={key}>
+                      <span>{label}</span>
+                      <small>{prompt}</small>
+                      <textarea rows="3" defaultValue={text} disabled={!editingGenerated} />
+                    </label>
+                  ))}
+                </div>
+              ) : (
+                <div className="decision-understanding-placeholder figma-structure-placeholder">
+                  <IconSparkle />
+                  <strong>Details not generated yet</strong>
+                  <p>Go back to Add details and generate the reusable structure.</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="figma-details-card figma-capture-card">
+              <div className="figma-details-head"><div><span>Private note</span><h3>Ready to save</h3></div></div>
+              <p className="form-intro">Your private note will stay visible only to you and can be converted into shared knowledge later.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Published */}
+      {step === 4 && (
         <div style={{ textAlign: "center", padding: "10px 0" }}>
           <Lottie animationData={published} size={120} loop={false} style={{ margin: "0 auto" }} />
-          <h3 style={{ fontSize: 18, marginTop: 4 }}>Knowledge published!</h3>
-          <p className="muted mt8" style={{ fontSize: 13 }}>It now appears across the Knowledge Hub, graph, and AI search.</p>
-          <div className="row gap8 mt20" style={{ justifyContent: "center" }}>
-            <button className="btn btn-ghost btn-sm" onClick={() => setStep(1)}>← Go Back</button>
-            <Link to="/hub" className="btn btn-primary btn-sm">View in Hub</Link>
+          <h3 style={{ fontSize: 18, marginTop: 4 }}>{isPrivate ? "Private note saved" : "Knowledge published"}</h3>
+          <p className="muted mt8" style={{ fontSize: 13 }}>{isPrivate ? "Your note is available in your personal space and can be converted later." : "The structured entry and its workspace context are now available for project retrieval."}</p>
+          <div className="row gap8 mt20 figma-success-actions" style={{ justifyContent: "center" }}>
+            <button className="btn btn-ghost btn-sm" onClick={() => { setStep(0); setType(""); setTags([]); setGenerated(false); setGeneratingInfo(false); setEditingGenerated(false); }}>Add another</button>
+            <Link to={isPrivate ? "/onboarding" : "/hub"} className="btn btn-primary btn-sm">{isPrivate ? "View My Space" : "View in Hub"}</Link>
           </div>
         </div>
       )}
 
       {/* Nav */}
-      {step < 2 && (
-        <div className="row between mt20" style={{ justifyContent: step === 0 ? "flex-end" : "space-between" }}>
+      {step < 4 && (
+        <div className="row between mt20 figma-add-nav" style={{ justifyContent: step === 0 ? "flex-end" : "space-between" }}>
           {step > 0 && <button className="btn btn-ghost btn-sm" onClick={() => setStep((s) => s - 1)}>← Back</button>}
-          <button className="btn btn-primary btn-sm" onClick={() => setStep((s) => s + 1)}>
-            {step === 1 ? "Publish" : "Continue"} <span style={{ width: 14, height: 14 }}><IconArrow /></span>
+          <button className={"btn btn-primary btn-sm" + (step === 2 && !isPrivate ? " figma-footer-generate-btn" : "")} disabled={step === 0 && !type} onClick={() => {
+            if (step === 2 && !isPrivate) {
+              generateInfo();
+            } else {
+              setStep((s) => s + 1);
+            }
+          }}>
+            {step === 2 && !isPrivate ? <><IconSparkle /> Generate info</> : <>{step === 3 ? (isPrivate ? "Save Private Note" : "Publish Knowledge") : "Continue"} <span style={{ width: 14, height: 14 }}><IconArrow /></span></>}
           </button>
         </div>
       )}
@@ -363,12 +507,13 @@ export default function FigmaPlugin() {
         </div>
 
         {/* Plugin panel */}
-        <div className="plugin-panel" style={{ width: 552, height: 756 }}>
+        <div className="plugin-panel">
           <div className="plugin-head plugin-head-col">
             <div className="row between" style={{ width: "100%", alignItems: "center" }}>
               <div className="plugin-brand">
                 <Wordmark size={24} />
               </div>
+              <div className="plugin-jedi-mini"><img src={yodaMain} alt="" /><span>Jedi for Figma</span></div>
               <button className="del-btn" style={{ position: "static" }}><span style={{ width: 14, height: 14 }}><IconClose /></span></button>
             </div>
             <div className="plugin-tabbar">

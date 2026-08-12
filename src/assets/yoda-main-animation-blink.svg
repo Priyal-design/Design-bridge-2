@@ -1,0 +1,278 @@
+<svg width="282" height="278" viewBox="0 0 282 278" fill="none" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+<style>
+@keyframes kf_Frame_20_opacity_0 {
+  0% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+#Frame_20 {
+  animation: kf_Frame_20_opacity_0 5s linear infinite;
+}
+@keyframes kf_Frame_22_opacity_0 {
+  0% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  40% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  60% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  80% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+#Frame_22 {
+  animation: kf_Frame_22_opacity_0 5s linear infinite;
+}
+@keyframes kf_Frame_24_opacity_0 {
+  0% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  40% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  60% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  80% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  98% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+#Frame_24 {
+  animation: kf_Frame_24_opacity_0 5s linear infinite;
+}
+@keyframes kf_Frame_26_opacity_0 {
+  0% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  40% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  60% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  80% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  97.33% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  99.33% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+#Frame_26 {
+  animation: kf_Frame_26_opacity_0 5s linear infinite;
+}
+@keyframes kf_Frame_28_opacity_0 {
+  0% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  40% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  60% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  80% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  97.33% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  99.33% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+#Frame_28 {
+  animation: kf_Frame_28_opacity_0 5s linear infinite;
+}
+@keyframes kf_Frame_30_opacity_0 {
+  0% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  40% {
+    animation-timing-function: linear;
+    opacity: 1;
+  }
+  60% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  80% {
+    animation-timing-function: linear;
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+#Frame_30 {
+  animation: kf_Frame_30_opacity_0 5s linear infinite;
+}
+</style>
+<g id="Yoda_mainanimationblinkorg" clip-path="url(#clip0_371_270)">
+<g id="i34" transform="translate(-44.8467 73.8066)">
+<g id="Clip_path_group" transform="translate(50.8467 -81.8066)">
+<mask id="mask0_371_270" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="282" height="274">
+<g id="i0">
+<path id="Vector" transform="translate(-51)" d="M377.64 0H0V281.6H377.64V0Z" fill="white"/>
+</g>
+</mask>
+<g mask="url(#mask0_371_270)">
+<g id="Frame" transform="translate(4 17)">
+<g id="Frame_2" transform="translate(6.08398 -0.103516)">
+<g id="Frame_3">
+<path id="Vector_2" d="M127.737 259.072C198.292 259.072 255.473 201.088 255.473 129.536C255.473 57.984 198.292 0 127.737 0C57.181 0 0 57.984 0 129.536C0 201.088 57.181 259.072 127.737 259.072Z" fill="#EDEDFC"/>
+</g>
+</g>
+<g id="Frame_4" transform="translate(25.5322 19.6094)">
+<g id="Frame_5">
+<path id="Vector_3" d="M13.8783 0L17.7805 10.144L27.7565 14.08L17.7805 18.016L13.8783 28.16L9.97599 18.016L0 14.08L9.97599 10.144L13.8783 0Z" fill="#FFD166"/>
+</g>
+</g>
+<g id="Frame_6" transform="translate(248.214 67.4805)">
+<g id="Frame_7">
+<path id="Vector_4" d="M7.77309 0L10.0075 5.632L15.5462 7.872L10.0075 10.144L7.77309 15.776L5.5702 10.144L0 7.872L5.5702 5.632L7.77309 0Z" fill="#FFD166"/>
+</g>
+</g>
+<g id="Frame_8" transform="translate(-1.68945 129.432)">
+<g id="Frame_9">
+<path id="Vector_5" d="M7.77309 0L10.0075 5.63201L15.5462 7.87201L10.0075 10.144L7.77309 15.776L5.57019 10.144L0 7.87201L5.57019 5.63201L7.77309 0Z" fill="#FFD166"/>
+</g>
+</g>
+<g id="Frame_10" transform="translate(62.8633 33.6895)">
+<g id="Frame_11">
+<path id="Vector_6" d="M70.9566 0C32.0912 0 7.0725 33.792 4.30314 67.584C2.63523 84.48 5.43607 92.928 3.2017 101.376C-1.23557 107.008 -1.23558 115.456 4.30314 121.088C1.53378 129.536 7.10398 140.8 18.2129 149.248C23.7516 168.96 43.2001 183.04 70.9566 183.04C98.7131 183.04 118.162 168.96 123.7 149.248C134.809 140.8 140.379 129.536 137.61 121.088C143.149 115.456 143.149 107.008 138.711 101.376C136.477 92.928 139.278 84.48 137.61 67.584C134.841 33.792 109.822 0 70.9566 0Z" fill="#8FC98A"/>
+</g>
+</g>
+<g id="Frame_12" transform="translate(11.6543 101.273)">
+<g id="Frame_13">
+<path id="Vector_7" d="M55.5131 0C27.7565 2.816 5.53872 25.344 0 50.688C22.2178 56.32 44.4042 46.176 52.7437 30.976L55.5131 0Z" fill="#8FC98A"/>
+</g>
+</g>
+<g id="Frame_14" transform="translate(200.474 101.273)">
+<g id="Frame_15">
+<path id="Vector_8" d="M0 0C27.7565 2.816 49.9744 25.344 55.5131 50.688C33.2953 56.32 11.1089 46.176 2.76935 30.976L0 0Z" fill="#8FC98A"/>
+</g>
+</g>
+<g id="Group_10" transform="translate(75.8389 110)">
+<g id="Frame_16" transform="translate(0 0.416016)">
+<g id="Frame_17" transform="translate(0.161133 -0.416016)">
+<path id="Vector_9" transform="translate(-0.970506 22.5)" d="M40 0C40 12.4222 31.0515 22.5 20.0149 22.5C8.97838 22.5 0 12.4222 0 0" stroke="black"/>
+</g>
+</g>
+<g id="Frame_18" transform="translate(74.1611)">
+<g id="Frame_19">
+<path id="Vector_10" transform="translate(1.98926 22.5)" d="M41 0C41 12.4222 31.7972 22.5 20.4847 22.5C9.17225 22.5 0 12.4222 0 0" stroke="black"/>
+</g>
+</g>
+<g id="Frame_20" transform="translate(20.1455 11.8555)">
+<g id="Frame_21">
+</g>
+</g>
+<g id="Frame_22" transform="translate(96.0908 11.8555)">
+<g id="Frame_23">
+</g>
+</g>
+</g>
+<g id="Group_11" transform="translate(73.8389 111.416)">
+<g id="Frame_24">
+<g id="Frame_25">
+<path id="Vector_11" d="M21.1164 47.296C32.7603 47.296 42.2013 36.704 42.2013 23.648C42.2013 10.592 32.7603 0 21.1164 0C9.47248 0 0 10.592 0 23.648C0 36.704 9.47248 47.296 21.1164 47.296Z" fill="#2E291F"/>
+</g>
+</g>
+<g id="Frame_26" transform="translate(77.7617)">
+<g id="Frame_27">
+<path id="Vector_12" d="M21.0849 47.296C32.7288 47.296 42.2013 36.704 42.2013 23.648C42.2013 10.592 32.7288 0 21.0849 0C9.44099 0 0 10.592 0 23.648C0 36.704 9.44099 47.296 21.0849 47.296Z" fill="#2E291F"/>
+</g>
+</g>
+<g id="Frame_28" transform="translate(21.6514 10.6895)">
+<g id="Frame_29">
+<path id="Vector_13" d="M5.00373 10.144C7.77309 10.144 10.0075 7.872 10.0075 5.088C10.0075 2.304 7.77309 0 5.00373 0C2.23437 0 0 2.304 0 5.088C0 7.872 2.23437 10.144 5.00373 10.144Z" fill="white"/>
+</g>
+</g>
+<g id="Frame_30" transform="translate(99.4131 10.6895)">
+<g id="Frame_31">
+<path id="Vector_14" d="M5.00374 10.144C7.7731 10.144 10.0075 7.872 10.0075 5.088C10.0075 2.304 7.7731 0 5.00374 0C2.23438 0 0 2.304 0 5.088C0 7.872 2.23438 10.144 5.00374 10.144Z" fill="white"/>
+</g>
+</g>
+</g>
+<g id="Frame_32" opacity="0.55" transform="translate(70.5029 155.896)">
+<g id="Frame_33">
+<path id="Vector_15" d="M11.1089 13.536C17.2456 13.536 22.2178 10.496 22.2178 6.752C22.2178 3.008 17.2456 0 11.1089 0C4.97226 0 0 3.008 0 6.752C0 10.496 4.97226 13.536 11.1089 13.536Z" fill="#FF9E7A"/>
+</g>
+</g>
+<g id="Frame_34" opacity="0.55" transform="translate(172.15 158.713)">
+<g id="Frame_35">
+<path id="Vector_16" d="M11.1089 13.536C17.2456 13.536 22.2178 10.496 22.2178 6.752C22.2178 3.008 17.2456 0 11.1089 0C4.97226 0 0 3.008 0 6.752C0 10.496 4.97226 13.536 11.1089 13.536Z" fill="#FF9E7A"/>
+</g>
+</g>
+<g id="Frame_36" transform="translate(106.063 180.121)">
+<g id="Frame_37">
+<path id="Vector_17" d="M0 0C18.5044 13.152 37.0087 13.152 55.5131 0" stroke="#2E291F" stroke-width="3.17339" stroke-linecap="round"/>
+</g>
+</g>
+<g id="Frame_38" transform="translate(83.8457 102.68)">
+<g id="Frame_39">
+<path id="Vector_18" d="M0 4.224C7.39545 -1.408 14.8224 -1.408 22.2178 4.224" stroke="#406E3B" stroke-width="3.17339" stroke-linecap="round"/>
+</g>
+</g>
+<g id="Frame_40" transform="translate(161.577 102.68)">
+<g id="Frame_41">
+<path id="Vector_19" d="M0 4.224C7.39545 -1.408 14.8224 -1.408 22.2178 4.224" stroke="#406E3B" stroke-width="3.17339" stroke-linecap="round"/>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_371_270">
+<rect width="282" height="274" fill="white"/>
+</clipPath>
+</defs>
+</svg>

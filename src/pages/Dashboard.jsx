@@ -1,7 +1,23 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { knowledgeGaps, activity, projects, statusBadge } from "../data";
-import { IconHub, IconArrow, IconAdd, IconStar } from "../components/Icons";
+import { IconHub, IconArrow, IconAdd, IconStar, IconDecision, IconGraph, IconProject, IconGauge } from "../components/Icons";
+
+const activityIcons = {
+  research: IconGraph,
+  check: IconDecision,
+  sprint: IconProject,
+  chart: IconGauge,
+  link: IconProject,
+};
+
+const activityColors = {
+  research: "#AF52DE",
+  check: "#007AFF",
+  sprint: "#FF9500",
+  chart: "#34C759",
+  link: "#4C4AFA",
+};
 import KnowledgeStackedChart from "../components/KnowledgeStackedChart";
 
 const quarters = ["Q1 2026", "Q2 2026", "Q3 2026"];
@@ -63,7 +79,7 @@ export default function Dashboard() {
           <div className="section-title">Recent Activity</div>
           {activity.map((a, i) => (
             <div key={i} className="activity-item">
-              <div className="activity-ic" style={{ background: `${a.color}22`, color: a.color }}>{a.icon}</div>
+              <div className="activity-ic" style={{ color: activityColors[a.icon] }}>{(() => { const Ic = activityIcons[a.icon]; return Ic ? <Ic /> : a.icon; })()}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 14 }}><strong>{a.who}</strong> {a.action}</div>
                 <div className="faint" style={{ fontSize: 12.5, marginTop: 2 }}>{a.time}{a.dept ? ` | ${a.dept}` : ""}</div>
@@ -107,7 +123,8 @@ export default function Dashboard() {
                 <div className="dash-proj-stats">
                   <div><div className="kl">Decisions</div><div className="kv">{p.decisions}</div></div>
                   <div><div className="kl">Research</div><div className="kv">{p.research}</div></div>
-                  <div><div className="kl">Accessibility</div><div className="kv">{p.accessibility} <span className="faint" style={{ fontSize: 11, fontWeight: 500 }}>score</span></div></div>
+                  <div><div className="kl">Guideline</div><div className="kv">{p.guideline}</div></div>
+                  <div><div className="kl">Evidence</div><div className="kv">{p.evidence}</div></div>
                 </div>
                 {p.team && (
                   <div className="dash-proj-created">Created By <strong>{p.team}</strong> | {p.created}</div>

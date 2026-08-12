@@ -3,6 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import {
   IconHome, IconHub, IconProject, IconSparkle,
   IconAdd, IconUfo, IconFigma, IconBell, IconClose, IconUserPlus,
+  IconFile,
 } from "./Icons";
 import Wordmark from "./Wordmark";
 import SearchBar from "./SearchBar";
@@ -12,7 +13,7 @@ const nav = [
   { section: "Overview" },
   { to: "/dashboard", label: "Home", icon: IconHome },
   { to: "/hub", label: "Knowledge Hub", icon: IconHub },
-  { to: "/projects/fee-management", label: "Project Detail", icon: IconProject },
+  { to: "/projects/fee-management/chapters", label: "Project Details", icon: IconProject },
   { section: "Intelligence" },
   { to: "/chat", label: "Ask Jedi Bot", icon: IconSparkle },
   { section: "Workflow" },
@@ -37,8 +38,23 @@ export default function Layout({ children }) {
   const [showInvite, setShowInvite] = useState(false);
   const [emails, setEmails] = useState([""]);
   let title = titles[loc.pathname] || "Design Bridge";
-  if (loc.pathname.startsWith("/projects")) title = "Project Detail";
-  if (loc.pathname.startsWith("/decisions")) title = "Decision Detail";
+  if (loc.pathname.match(/\/projects\/.+\/decisions\/.+/)) title = "Decision Detail";
+  else if (loc.pathname.match(/\/projects\/.+\/stories\/.+/)) title = "Knowledge Story";
+  else if (loc.pathname.match(/\/projects\/.+\/research\/.+/)) title = "Research Detail";
+  else if (loc.pathname.match(/\/projects\/.+\/guidelines\/.+/)) title = "Guideline Detail";
+  else if (loc.pathname.match(/\/projects\/.+\/evidence\/.+/)) title = "Evidence Detail";
+  else if (loc.pathname.match(/\/projects\/.+\/docs\/.+/)) title = "Documentation Detail";
+  else if (loc.pathname.match(/\/projects\/.+\/knowledge$/)) title = "Knowledge";
+  else if (loc.pathname.match(/\/projects\/.+\/chapters$/)) title = "Project Details";
+  else if (loc.pathname.match(/\/projects\/.+\/decisions$/)) title = "Design Decisions";
+  else if (loc.pathname.match(/\/projects\/.+\/research$/)) title = "Research Insights";
+  else if (loc.pathname.match(/\/projects\/.+\/guidelines$/)) title = "Guidelines";
+  else if (loc.pathname.match(/\/projects\/.+\/evidence$/)) title = "Evidence";
+  else if (loc.pathname.match(/\/projects\/.+\/docs$/)) title = "Project Documentation";
+  else if (loc.pathname.match(/\/projects\/.+\/v3$/)) title = "Project Details";
+  else if (loc.pathname.match(/\/projects\/.+\/v2$/)) title = "Project Details V2";
+  else if (loc.pathname.startsWith("/projects")) title = "Project Detail";
+  else if (loc.pathname.startsWith("/decisions")) title = "Decision Detail";
 
   const addEmailField = () => setEmails((prev) => [...prev, ""]);
   const updateEmail = (i, val) => setEmails((prev) => prev.map((e, idx) => (idx === i ? val : e)));
@@ -64,12 +80,17 @@ export default function Layout({ children }) {
             <div key={i} className="nav-section">{item.section}</div>
           ) : (
             <NavLink
-              key={item.to}
+              key={`${item.to}-${item.label}`}
               to={item.to}
-              className={({ isActive }) => "nav-item" + (isActive ? " active" : "")}
+              end={!item.child && item.to.startsWith("/projects/")}
+              className={({ isActive }) => {
+                const childActive = item.child && isActive;
+                return "nav-item" + (item.child ? " nav-child" : "") + (isActive && !item.child ? " active" : "") + (childActive ? " active" : "");
+              }}
             >
               <span className="nav-icon"><item.icon /></span>
-              {item.label}
+              <span className="nav-label">{item.label}</span>
+              {typeof item.count === "number" && <span className="nav-count">{item.count}</span>}
             </NavLink>
           )
         )}
@@ -88,13 +109,15 @@ export default function Layout({ children }) {
       <div className="main">
         <header className="topbar">
           <h1>{title}</h1>
-          <SearchBar
-            value={search}
-            onChange={setSearch}
-            placeholder="Search projects, decisions, studies…"
-            variant="global"
-            showFilter={false}
-          />
+          {loc.pathname !== "/hub" && loc.pathname !== "/add" && loc.pathname !== "/chat" && (
+            <SearchBar
+              value={search}
+              onChange={setSearch}
+              placeholder="Search projects, decisions, studies…"
+              variant="global"
+              showFilter={false}
+            />
+          )}
           <div className="topbar-actions">
             <button className="btn btn-ghost btn-sm" onClick={() => setShowInvite(true)}>
               <span style={{ width: 15, height: 15 }}><IconUserPlus /></span>

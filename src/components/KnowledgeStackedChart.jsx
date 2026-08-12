@@ -27,7 +27,7 @@ const segments = [
   { key: "researchInsights", label: "Research Insights", color: "#AF52DE" },
   { key: "guidelines", label: "Guidelines", color: "#FF9500" },
   { key: "evidence", label: "Evidence", color: "#34C759" },
-  { key: "documentation", label: "Documentation", color: "rgba(255,255,255,0.25)" },
+  { key: "documentation", label: "Documentation", color: "#4C4AFA" },
 ];
 
 function CustomLegend({ payload }) {

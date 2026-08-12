@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
-  projects, projectMetrics, contributors, timeline, timelineActive,
+  projects, projectMetrics, contributors, projectTeams, timeline, timelineActive,
   achievements, futureTasks, jira, statusBadge, departmentColors,
   figmaFiles, feedbackAnalysis, projectIssues, projectComments, usabilityVideos,
 } from "../data";
-import { IconArrow, IconPlay } from "../components/Icons";
+import { IconArrow, IconPlay, IconDecision, IconGraph, IconRuler, IconGauge } from "../components/Icons";
 import MagicWand from "../components/MagicWand";
 
 // Donut chart for the Feedback Analysis card
@@ -58,6 +58,7 @@ export default function ProjectDetail() {
   const visibleUsab = showAllUsab ? usabilityVideos : usabilityVideos.slice(0, USAB_PREVIEW);
 
   const [showFeedback, setShowFeedback] = useState(false);
+  const team = projectTeams[id] || contributors;
 
   return (
     <div className="page">
@@ -84,18 +85,36 @@ export default function ProjectDetail() {
         <p className="muted mt16" style={{ fontSize: 14.5, maxWidth: 760 }}>{project.summary}</p>
       </div>
 
-      {/* Metrics */}
-      <div className="pd-metric-grid">
-        {projectMetrics.map((m) => (
-          <div key={m.label} className="card">
-            <div className="faint" style={{ fontSize: 12.5, fontWeight: 600 }}>{m.label} V1 vs V2</div>
-            <div className="metric-arrow mt12">
-              <span className="metric-from">{m.from}</span>
-              <span className="arrow" style={{ width: 18, height: 18 }}><IconArrow /></span>
-              <span className="metric-to">{m.to}</span>
-            </div>
+      {/* Knowledge stats */}
+      <div className="pd-metric-grid mb24">
+        <Link to={`/projects/${id}/decisions`} className="card card-hover" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", textDecoration: "none", color: "inherit" }}>
+          <div className="row gap10" style={{ alignItems: "center" }}>
+            <div style={{ width: 28, height: 28, color: "#007AFF" }}><IconDecision /></div>
+            <div className="section-title" style={{ margin: 0 }}>Decisions</div>
           </div>
-        ))}
+          <div className="kv" style={{ fontSize: 24, fontWeight: 700, fontFamily: "var(--font-head)" }}>{project.decisions}</div>
+        </Link>
+        <div className="card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="row gap10" style={{ alignItems: "center" }}>
+            <div style={{ width: 28, height: 28, color: "#AF52DE" }}><IconGraph /></div>
+            <div className="section-title" style={{ margin: 0 }}>Research</div>
+          </div>
+          <div className="kv" style={{ fontSize: 24, fontWeight: 700, fontFamily: "var(--font-head)" }}>{project.research}</div>
+        </div>
+        <div className="card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="row gap10" style={{ alignItems: "center" }}>
+            <div style={{ width: 28, height: 28, color: "#FF9500" }}><IconRuler /></div>
+            <div className="section-title" style={{ margin: 0 }}>Guidelines</div>
+          </div>
+          <div className="kv" style={{ fontSize: 24, fontWeight: 700, fontFamily: "var(--font-head)" }}>{project.guideline}</div>
+        </div>
+        <div className="card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="row gap10" style={{ alignItems: "center" }}>
+            <div style={{ width: 28, height: 28, color: "#34C759" }}><IconGauge /></div>
+            <div className="section-title" style={{ margin: 0 }}>Evidence</div>
+          </div>
+          <div className="kv" style={{ fontSize: 24, fontWeight: 700, fontFamily: "var(--font-head)" }}>{project.evidence}</div>
+        </div>
       </div>
 
       {/* Three columns */}
@@ -137,7 +156,7 @@ export default function ProjectDetail() {
           {/* Contributors */}
           <div className="card">
             <div className="section-title">Contributors</div>
-            {contributors.map((c) => (
+            {team.map((c) => (
               <div key={c.name} className="contrib">
                 <div className="avatar" style={{ background: c.color }}>
                   {c.name.split(" ").map((n) => n[0]).join("")}
@@ -196,6 +215,21 @@ export default function ProjectDetail() {
                   : <FigmaPreview frames={f.frames} tint={f.tint} />}
               </a>
             ))}
+            <div className="figma-metrics">
+              <div className="section-title" style={{ marginBottom: 12 }}>V1 vs V2</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {projectMetrics.map((m) => (
+                  <div key={m.label}>
+                    <div className="section-title" style={{ marginBottom: 2, fontSize: 10 }}>{m.label}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontWeight: 700 }}>
+                      <span className="metric-from" style={{ fontSize: 14 }}>{m.from}</span>
+                      <span className="arrow" style={{ width: 12, height: 12, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}><IconArrow /></span>
+                      <span className="metric-to" style={{ fontSize: 16 }}>{m.to}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Feedback Analysis */}
@@ -276,7 +310,7 @@ export default function ProjectDetail() {
               Users failed to notice the CTA in the previous location. Heatmaps and usability testing
               showed far higher visibility above the fold.
             </div>
-            <div className="row gap8 mt12 wrap">
+            <div className="row gap8 mt12 wrap" style={{ alignItems: "center" }}>
               <span className="tag">Study #11</span>
               <span className="tag">Heatmaps</span>
             </div>
@@ -313,16 +347,19 @@ export default function ProjectDetail() {
           {/* Comments */}
           <div className="card">
             <div className="section-title">Comments</div>
-            {projectComments.map((c, i) => (
-              <div key={i} className={"comment-row" + (i < projectComments.length - 1 ? " bordered" : "")}>
-                <div className="avatar" style={{ background: c.color, width: 32, height: 32, fontSize: 12 }}>{c.who[0]}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 700 }}>{c.who}</div>
-                  <div className="muted" style={{ fontSize: 13 }}>{c.text}</div>
+            {projectComments.map((c, i) => {
+              const tm = team.find(t => t.name.startsWith(c.who));
+              return (
+                <div key={i} className={"comment-row" + (i < projectComments.length - 1 ? " bordered" : "")}>
+                  <div className="avatar" style={{ background: tm?.color || c.color, width: 32, height: 32, fontSize: 12 }}>{tm?.ini || c.who[0]}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 700 }}>{c.who}</div>
+                    <div className="muted" style={{ fontSize: 13 }}>{c.text}</div>
+                  </div>
+                  <span className="issue-arrow" style={{ width: 16, height: 16 }}><IconArrow /></span>
                 </div>
-                <span className="issue-arrow" style={{ width: 16, height: 16 }}><IconArrow /></span>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Usability Testing */}
@@ -342,7 +379,7 @@ export default function ProjectDetail() {
                         <span className="tag" style={{ fontSize: 11, padding: "3px 9px" }}>{v.tag}</span>
                         <span className="tag" style={{ fontSize: 11, padding: "3px 9px" }}>{v.tag2}</span>
                       </div>
-                      <span className="stack-av" style={{ background: (contributors.find(c => c.name.startsWith(v.author)) || {}).color || "#888", width: 26, height: 26, fontSize: 10, marginLeft: 0 }}>
+                      <span className="stack-av" style={{ background: (team.find(c => c.name.startsWith(v.author)) || {}).color || "#888", width: 26, height: 26, fontSize: 10, marginLeft: 0 }}>
                         {v.author[0]}
                         <span className="av-tip">{v.author}</span>
                       </span>

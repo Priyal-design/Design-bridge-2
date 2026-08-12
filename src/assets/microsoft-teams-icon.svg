@@ -1,0 +1,30 @@
+<svg width="32" height="32" viewBox="0 0 2048 2048" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="teamsA" x1="420" y1="120" x2="1240" y2="920" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9BB8FF"/>
+      <stop offset="1" stop-color="#594BDD"/>
+    </linearGradient>
+    <linearGradient id="teamsB" x1="1320" y1="260" x2="1860" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8FA6FF"/>
+      <stop offset="1" stop-color="#5B43DF"/>
+    </linearGradient>
+    <linearGradient id="teamsC" x1="240" y1="760" x2="1320" y2="1880" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#86BAF6"/>
+      <stop offset="1" stop-color="#6B71FF"/>
+    </linearGradient>
+    <linearGradient id="teamsD" x1="1180" y1="900" x2="2048" y2="1460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3F2AB8"/>
+      <stop offset="1" stop-color="#8B6DFF"/>
+    </linearGradient>
+    <linearGradient id="teamsE" x1="0" y1="1160" x2="920" y2="1840" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#607CFF"/>
+      <stop offset="1" stop-color="#2C1C96"/>
+    </linearGradient>
+  </defs>
+  <circle cx="796" cy="336" r="336" fill="url(#teamsA)"/>
+  <circle cx="1640" cy="512" r="282" fill="url(#teamsB)"/>
+  <path d="M228 1138C228 850 462 616 750 616H1030C1318 616 1552 850 1552 1138V2048H782C476 2048 228 1800 228 1494V1138Z" fill="url(#teamsC)"/>
+  <path d="M1260 844H1718C1900 844 2048 992 2048 1174V1746C2048 1913 1913 2048 1746 2048H1690C1452 2048 1260 1856 1260 1618V844Z" fill="url(#teamsD)"/>
+  <path d="M0 1265C0 1163 83 1080 185 1080H730C832 1080 915 1163 915 1265V1818C915 1920 832 2003 730 2003H185C83 2003 0 1920 0 1818V1265Z" fill="url(#teamsE)"/>
+  <path d="M258 1277H655V1373H507V1800H407V1373H258V1277Z" fill="white"/>
+</svg>

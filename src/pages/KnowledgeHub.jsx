@@ -43,7 +43,14 @@ export default function KnowledgeHub() {
   };
 
   const displayed = projects.map((p) => ({ ...p, favorite: favorites.has(p.id) }));
-  const filtered = filterAndSortProjects(displayed, filter).filter((p) => matchesCategory(p, category));
+  const filtered = filterAndSortProjects(displayed, filter)
+    .filter((p) => matchesCategory(p, category))
+    .sort((a, b) => {
+      if (a.favorite !== b.favorite) return a.favorite ? -1 : 1;
+      if (a.id === "fee-management") return -1;
+      if (b.id === "fee-management") return 1;
+      return 0;
+    });
 
   return (
     <div className="page">
@@ -67,10 +74,10 @@ export default function KnowledgeHub() {
 
       <div className="khub-grid">
         {filtered.map((p) => {
-          const label = p.status === "In Development" ? "In Preparation" : p.status;
+          const label = p.status === "In Development" ? "In Preparation" : p.status === "Released" ? "Completed" : p.status;
           const team = projectTeams[p.id] || [];
           return (
-            <Link key={p.id} to={`/projects/${p.id}`} className="card card-hover khub-card">
+            <Link key={p.id} to={p.id === "fee-management" ? `/projects/${p.id}/chapters` : `/projects/${p.id}`} className="card card-hover khub-card">
               <div className="khub-top">
                 <div className="khub-title">
                   <button
@@ -90,7 +97,8 @@ export default function KnowledgeHub() {
               <div className="khub-stats">
                 <div><div className="kl">Decisions</div><div className="kv">{p.decisions}</div></div>
                 <div><div className="kl">Research</div><div className="kv">{p.research}</div></div>
-                <div><div className="kl">Accessibility</div><div className="kv">{p.accessibility} <span className="kl" style={{ textTransform: "none" }}>score</span></div></div>
+                <div><div className="kl">Guideline</div><div className="kv">{p.guideline}</div></div>
+                <div><div className="kl">Evidence</div><div className="kv">{p.evidence}</div></div>
               </div>
 
               <p className="khub-desc">{p.summary}</p>

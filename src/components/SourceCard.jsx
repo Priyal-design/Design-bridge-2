@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { contributors } from "../data";
 import { IconPlay } from "./Icons";
 
@@ -24,10 +24,21 @@ function Donut({ segments }) {
   );
 }
 
-export default function SourceCard({ src }) {
+export default function SourceCard({ src, isActive = false, isDimmed = false, activePassages = [], onMouseEnter, onMouseLeave, onPassageMouseEnter }) {
   const [open, setOpen] = useState(false);
+  const activePassageTexts = activePassages.map((p) => typeof p === "string" ? p : p.text);
+
+  useEffect(() => {
+    if (isActive) setOpen(true);
+  }, [isActive]);
+
   return (
-    <div className="src-card">
+    <div
+      className={"src-card" + (isActive ? " src-card--active" : "") + (isDimmed ? " src-card--dimmed" : "")}
+      id={`source-${src.id}`}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <div className="src-eyebrow">{src.eyebrow}</div>
 
       {src.kind === "figma" && (
@@ -59,7 +70,7 @@ export default function SourceCard({ src }) {
               <span className="tag" style={{ fontSize: 11, padding: "3px 9px" }}>{src.tag2}</span>
             </div>
             <span className="stack-av" style={{ background: (contributors.find(c => c.name.startsWith(src.author)) || {}).color || "#888", width: 26, height: 26, fontSize: 10, marginLeft: 0 }}>
-              {src.author[0]}
+              {(contributors.find(c => c.name.startsWith(src.author)) || {}).ini || src.author[0]}
               <span className="av-tip">{src.author}</span>
             </span>
           </div>
@@ -79,9 +90,16 @@ export default function SourceCard({ src }) {
       {open && src.details && (
         <div className="src-details">
           {src.details.map((d) => (
-            <div key={d} className="list-item">
+            <div
+              key={d.id || d}
+              className={"list-item source-passage" + (activePassageTexts.includes(d.text || d) ? " source-passage--active" : "")}
+              id={d.id ? `passage-${d.id}` : undefined}
+              onMouseEnter={() => d.claimIds?.[0] && onPassageMouseEnter?.(d.claimIds[0])}
+              onFocus={() => d.claimIds?.[0] && onPassageMouseEnter?.(d.claimIds[0])}
+              tabIndex={d.claimIds?.length ? 0 : undefined}
+            >
               <span className="list-bullet" style={{ background: "var(--accent)" }} />
-              <span style={{ fontSize: 12.5 }}>{d}</span>
+              <span style={{ fontSize: 12.5 }}>{d.text || d}</span>
             </div>
           ))}
         </div>
