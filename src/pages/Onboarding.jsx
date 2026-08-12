@@ -45,7 +45,7 @@ const startHereCards = [
 
 const whatChanged = [
   ["CTA placement decision updated", "2h ago", "/projects/fee-management/decisions"],
-  ["Accessibility testing moved", "Yesterday", "/projects/fee-management"],
+  ["Accessibility testing moved", "Yesterday", "/projects/fee-management/chapters"],
   ["3 checkout prototypes added", "1d ago", "/figma"],
 ];
 
